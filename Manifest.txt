@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/augment
+lib/augment.rb
+spec/augment_spec.rb
