@@ -6,6 +6,7 @@ require 'rubygems'
 require 'json'
 
 require 'backend'
+require 'frontend'
 require 'layer'
 
 Dir.glob(File.dirname(__FILE__) + '/backends/*rb').each { |b| require b.gsub('.rb', '') }

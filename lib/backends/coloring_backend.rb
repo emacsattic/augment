@@ -1,5 +1,5 @@
 class ColoringBackend < Backend
-  COLORS = ['white', 'red', 'green', 'blue', 'brown']
+  COLORS = ['white', 'red', 'green', 'blue', 'black']
   
   class << self
     attr_reader :layers

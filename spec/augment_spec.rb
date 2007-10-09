@@ -19,15 +19,15 @@ describe Backend, " when augmenting by color" do
   it "should color the colors and ranges" do
     output = JSON.parse(File.read('lib/.augment/drink.rb'))
     output.size.should == 4
-    output[0]['color'].should == 'red'
-    output[1]['color'].should == 'green'
-    output[2]['color'].should == 'brown'
-    output[3]['color'].should == 'brown'
+    output[0]['color'].should == 'white'
+    output[1]['color'].should == 'red'
+    output[2]['color'].should == 'green'
+    output[3]['color'].should == 'black'
 
-    output[0]['range'].should == (371 .. 374).to_s
-    output[1]['range'].should == (456 .. 461).to_s
-    output[2]['range'].should == (291 .. 296).to_s
-    output[3]['range'].should == (528 .. 533).to_s
+    output[0]['range'].should == (221 .. 226).to_s
+    output[1]['range'].should == (371 .. 374).to_s
+    output[2]['range'].should == (456 .. 461).to_s
+    output[3]['range'].should == (531 .. 536).to_s
   end
 end
 
@@ -44,4 +44,15 @@ describe Backend, " when augmenting flog results" do
 
   it "should color a complex method"
   it "should color a simple method"
+end
+
+describe Frontend, " when outputting ANSI color" do
+  before do
+    FileUtils.cd(PROJECT_ROOT)
+  end
+
+  it "should color red as red" do
+    output = `../../../bin/augment_color #{PROJECT_ROOT}/lib/drink.rb`
+    output.to_s.should include("#{'red'.colorize('red')}")
+  end
 end

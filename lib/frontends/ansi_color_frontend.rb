@@ -14,7 +14,7 @@ class String
   end
 
   def colorize_range(range, color)
-    "#{self[0 .. range.begin]}#{self[range].colorize(color)}#{self[range.end .. -1]}"
+    "#{self[0 ... range.begin]}#{self[range].colorize(color)}#{self[range.end ... -1]}"
   end
   
   def self.lookup_color_code(color, foreground = true)
@@ -23,7 +23,7 @@ class String
   end
 end
 
-class AnsiColorFrontend
+class AnsiColorFrontend < Frontend
   class << self
     def show(file)
       text = File.read(file)
@@ -31,7 +31,8 @@ class AnsiColorFrontend
       # TODO: work with overlapping layers
 
       layers.each do |layer|
-        range = Range.new(*layer['range'].split('..'))
+        # need to increment the range values by the amount of text already inserted by #colorize_range
+        range = (layer['range'].split('..').first.to_i ... layer['range'].split('..').last.to_i)
         text = text.colorize_range(range, layer['color'])
       end
 

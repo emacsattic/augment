@@ -4,7 +4,7 @@ class Layer
   end
 
   def self.read(original_file)
-    JSON.parse(File.read(Augment.augment_file(original_file)))
+    JSON.parse(File.read(Augment.augment_path(original_file)))
   end
 
   def to_json
