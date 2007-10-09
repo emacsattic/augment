@@ -25,7 +25,17 @@ end
 
 class AnsiColorFrontend
   class << self
-    def run(file)
+    def show(file)
+      text = File.read(file)
+      layers = Layer.read(file)
+      # TODO: work with overlapping layers
+
+      layers.each do |layer|
+        range = Range.new(*layer['range'].split('..'))
+        text = text.colorize_range(range, layer['color'])
+      end
+
+      puts text
     end
   end
 end

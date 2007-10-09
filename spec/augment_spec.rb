@@ -12,12 +12,12 @@ describe Backend, " when augmenting by color" do
   end
 
   it "should create .augment directory and files" do
-    File.should exist('.augment')
-    File.should exist('.augment/lib_drink_rb')
+    File.should exist('lib/.augment')
+    File.should exist('lib/.augment/drink.rb')
   end
   
   it "should color the colors and ranges" do
-    output = JSON.parse(File.read('.augment/lib_drink_rb'))
+    output = JSON.parse(File.read('lib/.augment/drink.rb'))
     output.size.should == 4
     output[0]['color'].should == 'red'
     output[1]['color'].should == 'green'
