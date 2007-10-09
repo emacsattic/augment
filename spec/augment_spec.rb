@@ -1,26 +1,37 @@
 $LOAD_PATH << File.dirname(__FILE__) + '/../lib'
 require 'augment'
-require 'coloring_augmentor'
-require 'spec_helper'
 
-describe AugmentBackend, " when augmenting by color" do
+PROJECT_ROOT = File.expand_path(File.dirname(__FILE__) + '/fixtures/drinks/')
+
+describe Backend, " when augmenting by color" do
   before do
-    FileUtils.cd(File.dirname(__FILE__) + '/fixtures/drinks')
+    FileUtils.cd(PROJECT_ROOT)
     FileUtils.rm_r('.augment') rescue nil
     
-    ColoringAugmentor.run('lib/drink.rb')
-    ColoringAugmentor.run('lib/white_russian.rb')
+    ColoringBackend.run('lib/drink.rb')
   end
 
-  it "should create .augment directory" do
+  it "should create .augment directory and files" do
     File.should exist('.augment')
+    File.should exist('.augment/lib_drink_rb')
   end
   
-  it "should create .augment files for each code file"
-  it "should color red things red"
+  it "should color the colors and ranges" do
+    output = JSON.parse(File.read('.augment/lib_drink_rb'))
+    output.size.should == 4
+    output[0]['color'].should == 'red'
+    output[1]['color'].should == 'green'
+    output[2]['color'].should == 'brown'
+    output[3]['color'].should == 'brown'
+
+    output[0]['range'].should == (371 .. 374).to_s
+    output[1]['range'].should == (456 .. 461).to_s
+    output[2]['range'].should == (291 .. 296).to_s
+    output[3]['range'].should == (528 .. 533).to_s
+  end
 end
 
-describe AugmentBackend, " when augmenting test results" do
+describe Backend, " when augmenting test results" do
 
   it "should color passing tests green"
   it "should color failing tests red"
@@ -29,7 +40,7 @@ describe AugmentBackend, " when augmenting test results" do
   it "should highlight specific line"
 end
 
-describe AugmentBackend, " when augmenting flog results" do
+describe Backend, " when augmenting flog results" do
 
   it "should color a complex method"
   it "should color a simple method"

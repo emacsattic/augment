@@ -14,4 +14,8 @@ Hoe.new('augment', Augment::VERSION) do |p|
   p.changes = p.paragraphs_of('History.txt', 0..1).join("\n\n")
 end
 
+task :publish_html do
+  system("scp -r html/* technomancy@rubyforge.org:/var/www/gforge-projects/augment/")
+end
+
 # vim: syntax=Ruby
