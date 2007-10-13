@@ -31,28 +31,29 @@ describe Backend, " when augmenting by color" do
   end
 end
 
-describe Backend, " when augmenting test results" do
+# describe Backend, " when augmenting test results" do
 
-  it "should color passing tests green"
-  it "should color failing tests red"
-  it "should color errors orange"
-  it "should include failure message"
-  it "should highlight specific line"
-end
+#   it "should color passing tests green"
+#   it "should color failing tests red"
+#   it "should color errors orange"
+#   it "should include failure message"
+#   it "should highlight specific line"
+# end
 
-describe Backend, " when augmenting flog results" do
+# describe Backend, " when augmenting flog results" do
 
-  it "should color a complex method"
-  it "should color a simple method"
-end
+#   it "should color a complex method"
+#   it "should color a simple method"
+# end
 
 describe Frontend, " when outputting ANSI color" do
   before do
     FileUtils.cd(PROJECT_ROOT)
   end
-
+  
   it "should color red as red" do
     output = `../../../bin/augment_color #{PROJECT_ROOT}/lib/drink.rb`
+    output.to_s.should include("#{'white'.colorize('white')}")
     output.to_s.should include("#{'red'.colorize('red')}")
   end
 end

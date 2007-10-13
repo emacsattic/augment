@@ -28,12 +28,10 @@ class AnsiColorFrontend < Frontend
     def show(file)
       text = File.read(file)
       layers = Layer.read(file)
-      # TODO: work with overlapping layers
 
+      # TODO: deal with overlapping color ranges
       layers.each do |layer|
-        # need to increment the range values by the amount of text already inserted by #colorize_range
-        range = (layer['range'].split('..').first.to_i ... layer['range'].split('..').last.to_i)
-        text = text.colorize_range(range, layer['color'])
+        text = text.colorize_range(layer['range'], layer['color'])
       end
 
       puts text
