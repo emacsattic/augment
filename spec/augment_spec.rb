@@ -17,18 +17,18 @@ describe Backend, " when augmenting by color" do
   end
   
   it "should color the colors and ranges" do
-    # REFACTOR : should use Layer.read instead of JSON.parse
-    layers = JSON.parse(File.read('lib/.augment/drink.rb'))
+    layers = Layer.read('lib/drink.rb')
     layers.size.should == 4
-    layers[0]['color'].should == 'white'
-    layers[1]['color'].should == 'red'
-    layers[2]['color'].should == 'green'
-    layers[3]['color'].should == 'black'
 
-    layers[0]['range'].should == (221 ... 226).to_s
-    layers[1]['range'].should == (371 ... 374).to_s
-    layers[2]['range'].should == (456 ... 461).to_s
-    layers[3]['range'].should == (531 ... 536).to_s
+    layers[0]['color'].should == 'black'
+    layers[1]['color'].should == 'green'
+    layers[2]['color'].should == 'red'
+    layers[3]['color'].should == 'white'
+
+    layers[0]['range'].should == (531 ... 536)
+    layers[1]['range'].should == (456 ... 461)
+    layers[2]['range'].should == (371 ... 374)
+    layers[3]['range'].should == (221 ... 226)
   end
 end
 
@@ -49,11 +49,14 @@ describe Backend, " when augmenting test results" do
     layers.first['range'].should == (228 ... 338)
   end
   
-  it "should include failure message"
+  it "should include failure message" do
+    layers = Layer.read('test/test_drink.rb')
+    layers.first['message'].should =~ /bad length/
+    layers.last['message'].should =~ /undefined local variable or method/
+  end
 end
 
 describe Backend, " when augmenting flog results" do
-
   it "should color a complex method"
   it "should color a simple method"
 end

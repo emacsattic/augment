@@ -1,20 +1,15 @@
-def at_exit; end # keep miniunit's at_exit block from running
-gem 'miniunit'
-require 'test/unit'
-
-# ideally we could do this with flet, but alias_method is uncooperative
-# flet(:at_exit => {}) do
-#   # keep miniunit's at_exit block from running
-#   gem 'miniunit'
-#   require 'test/unit'
-# end
+Object.flet(:at_exit => lambda {}) do
+  # keep miniunit's at_exit block from running
+  gem 'miniunit'
+  require 'test/unit'
+end
 
 module Test
-  def Unit.puke(*args)
+  def Unit.puke(*args) # pass on failure info
     TestUnitBackend.record_failure(*args)
   end
 
-  def Unit.puts(*args); end
+  def Unit.puts(*args); end # muffle test output
 end
 
 class TestUnitBackend < Backend

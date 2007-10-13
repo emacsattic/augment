@@ -11,12 +11,30 @@ as to interface with many editors.
 
 == Usage
 
+The +augment+ executable gathers metadata in the form of layers for a
+given file via a backend. Some backends gather data for a file other
+than the original one passed in. (The test backend will store data for
+the test if you pass in the implementation.)
+
+Example:
+
+$ augment test lib/foo.rb # will store metadata for test/test_foo.rb
+
+The various frontends have their own executables that provide access
+to the layer metadata once it's stored. The simplest frontend is
++augment_color+ which outputs the layers via ANSI color codes to the
+shell:
+
+$ augment_color test/test_foo.rb
+
+Most other frontends are editor-specific.
+
 == Design
 
 Augment is designed to be generalized; if you want to collect
 different kinds of data you can just write a new backend. If you want
-to display the data in an unsupported editor, you can write a new
-frontend.
+to display the data in an unsupported editor or output format, you can
+write a new frontend.
 
 === Backends
 
@@ -28,11 +46,12 @@ metadata, with the exception of auto-initiating backends like autotest.
 
 === Frontends
 
-Each frontend is implemented within an editor or IDE. It watches the
-.augment directory for changes and applies them to the open buffers
+Most frontends are implemented within an editor or IDE. They watche
+the .augment directory for changes and apply them to the open buffers
 when they happen.  The user can choose what augmentations he wants
 displayed either globally or on a per-file basis. He can also control
-when backend initiators should be started.
+when backend initiators should be started, though usually these will
+be kicked off automatically upon saving a file.
 
 === Layers
 
@@ -44,7 +63,8 @@ and the message associated with it.
 
 Backends:
 
-* Tests (miniunit) or specs (rspec)
+* Tests (miniunit)
+* Rspec (planned)
 * Heckle (planned)
 * Rcov (planned)
 * Flog (planned)
@@ -59,7 +79,7 @@ Frontends:
 
 == Issues
   
-* Not really written yet.
+* Not really, um, written yet.
 
 == License
 

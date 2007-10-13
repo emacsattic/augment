@@ -5,7 +5,7 @@ $LOAD_PATH << File.dirname(__FILE__) + '/frontends'
 require 'rubygems'
 require 'json'
 
-#require 'flet'
+require 'flet'
 require 'backend'
 require 'frontend'
 require 'layer'
