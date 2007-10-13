@@ -5,6 +5,7 @@ $LOAD_PATH << File.dirname(__FILE__) + '/frontends'
 require 'rubygems'
 require 'json'
 
+#require 'flet'
 require 'backend'
 require 'frontend'
 require 'layer'
@@ -16,7 +17,9 @@ class Augment
   VERSION = '1.0.0'
 
   def initialize(backend)
-    @backend = { 'color' => ColoringBackend }[backend]
+    @backend = { 'color' => ColoringBackend,
+      'test' => TestUnitBackend
+    }[backend]
   end
 
   def run(file)

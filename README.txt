@@ -44,7 +44,7 @@ and the message associated with it.
 
 Backends:
 
-* Tests or specs
+* Tests (miniunit) or specs (rspec)
 * Heckle (planned)
 * Rcov (planned)
 * Flog (planned)
@@ -52,8 +52,8 @@ Backends:
 
 Frontends:
 
-* Emacs
 * ANSI color codes (for shells)
+* Emacs (planned)
 * Vim (planned)
 * Textmate (planned)
 

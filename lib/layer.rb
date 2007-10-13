@@ -8,6 +8,10 @@ class Layer
     JSON.parse(File.read(Augment.augment_path(original_file))).map{ |l| Layer.new(l['range'], l['color'], l['message']) }.sort_by{ |l| l['range'].begin }.reverse
   end
 
+  def self.line_range_to_char_range(range)
+    # FIXME: implement
+  end
+  
   def to_json
     @attrs.to_json
   end

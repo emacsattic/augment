@@ -6,7 +6,7 @@ PROJECT_ROOT = File.expand_path(File.dirname(__FILE__) + '/fixtures/drinks/')
 describe Backend, " when augmenting by color" do
   before do
     FileUtils.cd(PROJECT_ROOT)
-    FileUtils.rm_r('.augment') rescue nil
+    FileUtils.rm_r('lib/.augment') rescue nil
     
     ColoringBackend.run('lib/drink.rb')
   end
@@ -35,35 +35,37 @@ end
 describe Backend, " when augmenting test results" do
   before do
     FileUtils.cd(PROJECT_ROOT)
-    FileUtils.rm_r('.augment') rescue nil
+    FileUtils.rm_r('test/.augment') rescue nil
     
     TestUnitBackend.run('test/test_drink.rb')
   end
   
-  it "should color passing tests green" do
-    layers = JSON.parse(File.read(File.expand_path('test/.augment/test_drink.rb')))
-    layers[0]['color'].should == 'yellow'
-    layers[1]['color'].should == 'green'
-    layers[2]['color'].should == 'red'
+  it "should color failing/erroring tests" do
+    File.should exist(Augment.augment_path('test/test_drink.rb'))
+    layers = Layer.read('test/test_drink.rb')
+    layers.first['color'].should == 'red'
+    layers.last['color'].should == 'yellow'
 
-    layers[0]['range'].should == (61 ... 103).to_s
+    layers.first['range'].should == (228 ... 338)
   end
   
-  it "should color failing tests red"
-  it "should color errors orange"
   it "should include failure message"
-  it "should highlight specific line"
 end
 
-# describe Backend, " when augmenting flog results" do
+describe Backend, " when augmenting flog results" do
 
-#   it "should color a complex method"
-#   it "should color a simple method"
-# end
+  it "should color a complex method"
+  it "should color a simple method"
+end
 
 describe Frontend, " when outputting ANSI color" do
   before do
     FileUtils.cd(PROJECT_ROOT)
+    FileUtils.rm_r('lib/.augment') rescue nil
+    FileUtils.rm_r('test/.augment') rescue nil
+
+    ColoringBackend.run('lib/drink.rb')
+    TestUnitBackend.run('test/test_drink.rb')
   end
   
   it "should color red as red" do
@@ -75,7 +77,6 @@ describe Frontend, " when outputting ANSI color" do
   it "should color the test_drink" do
     output = `../../../bin/augment_color #{PROJECT_ROOT}/test/test_drink.rb`
     output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['red']}m *def/)
-    output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['green']}m *def/)
     output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['yellow']}m *def/)
   end
 end

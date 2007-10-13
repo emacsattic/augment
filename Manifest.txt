@@ -1,7 +1,17 @@
+COPYING
 History.txt
 Manifest.txt
 README.txt
 Rakefile
 bin/augment
+bin/augment_color
 lib/augment.rb
+lib/layer.rb
+lib/backends/backend.rb
+lib/backends/coloring_backend.rb
+lib/backends/test_unit_backend.rb
+lib/frontends/frontend.rb
+lib/frontends/ansi_color_frontend.rb
 spec/augment_spec.rb
+spec/fixtures/drinks/lib/drink.rb
+spec/fixtures/drinks/test/test_drink.rb

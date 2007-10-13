@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class Backend
   class << self
     def write_layers

@@ -1,29 +1,42 @@
-require 'miniunit'
+def at_exit; end # keep miniunit's at_exit block from running
+gem 'miniunit'
+require 'test/unit'
+
+# ideally we could do this with flet, but alias_method is uncooperative
+# flet(:at_exit => {}) do
+#   # keep miniunit's at_exit block from running
+#   gem 'miniunit'
+#   require 'test/unit'
+# end
 
 module Test
-  class Unit
-    def puke(klass, meth, e)
-      TestUnitBackend.record_failure(klass, meth, e)
-    end
+  def Unit.puke(*args)
+    TestUnitBackend.record_failure(*args)
   end
+
+  def Unit.puts(*args); end
 end
 
 class TestUnitBackend < Backend
   class << self
     def run(file)
-      run_tests(file)
+      @file = file
+      @layers = {}
+      
+      load(file)
+      Test::Unit.autotest # this will call record_failure
       write_layers
     end
 
-    def run_tests(file)
-      Test::Unit.autotest
-      # FIXME: write this
-      @layers = { 'test/test_drink.rb' => [Layer.new((61 ... 103), 'yellow', 'You had an error, dork!'),
-                                           Layer.new((106 ... 225), 'green', 'good job, it passed'),
-                                           Layer.new((228 ... 338), 'red', 'fail.')]}
-    end
-
-    def record_failure(klass, meth, e)
+    def record_failure(*args)
+      # FIXME: errors here could actually occur in impl rather than test file
+      (@layers[@file] ||= []) << Layer.from_failure(*args)
     end
   end
+end
+
+def Layer.from_failure(klass, method, exception)
+  color = Test::Assertion === exception ? 'red' : 'yellow'
+  range = color == 'red' ? (228 ... 338) : (61 ... 103) # FIXME
+  Layer.new(range, color, exception.message)
 end
