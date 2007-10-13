@@ -14,15 +14,11 @@ def Object.flet(bindings, &block)
 end
 
 if $0 == __FILE__
-  def foo
-    puts "foo"
-  end
+  puts "foo" # should output "foo"
   
-  foo # should output "foo"
-  
-  Object.flet(:foo => lambda { puts "bar" }) do
-    foo # should output "bar"
+  Object.flet(:puts => lambda { |str| print "#{str.reverse}\n" }) do
+    puts "foo" # should output "foofoofoo"
   end
 
-  foo # should output "foo"
+  puts "foo" # should output "foo"
 end
