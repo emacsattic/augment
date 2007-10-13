@@ -14,7 +14,7 @@ class String
   end
 
   def colorize_range(range, color)
-    "#{self[0 ... range.begin]}#{self[range].colorize(color)}#{self[range.end ... -1]}"
+    "#{self[0 ... range.begin]}#{self[range].colorize(color)}#{self[range.end .. -1]}"
   end
   
   def self.lookup_color_code(color, foreground = true)
