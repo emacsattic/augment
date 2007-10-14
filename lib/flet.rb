@@ -6,10 +6,12 @@ def Object.flet(bindings, &block)
     define_method(the_method, body)
   end
   
-  block.call
-  
-  bindings.each do |the_method, body|
-    define_method(the_method) { |*args| old_methods[the_method].call(*args) }
+  begin
+    block.call
+  ensure
+    bindings.each do |the_method, body|
+      define_method(the_method) { |*args| old_methods[the_method].call(*args) }
+    end
   end
 end
 
