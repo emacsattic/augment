@@ -1,6 +1,6 @@
 Object.flet(:at_exit => lambda {}) do
   # keep miniunit's at_exit block from running
-  gem 'miniunit'
+  gem 'miniunit', ">= 1.0.1"
   require 'test/unit'
 end
 
