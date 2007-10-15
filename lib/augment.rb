@@ -4,26 +4,15 @@ $LOAD_PATH << File.dirname(__FILE__) + '/frontends'
 
 require 'rubygems'
 require 'json'
-
-require 'flet'
-require 'backend'
-require 'frontend'
 require 'layer'
-
-Dir.glob(File.dirname(__FILE__) + '/backends/*rb').each { |b| require b.gsub('.rb', '') }
-Dir.glob(File.dirname(__FILE__) + '/frontends/*rb').each { |b| require b.gsub('.rb', '') }
+require 'flet'
 
 class Augment
   VERSION = '1.0.0'
-
-  def initialize(backend)
-    @backend = { 'color' => ColoringBackend,
-      'test' => TestUnitBackend
-    }[backend]
-  end
-
-  def run(file)
-    @backend.run(file)
+  BACKENDS = {}
+  
+  def initialize(backend_name, file)
+    BACKENDS[backend_name].run(file)
   end
 
   class << self
@@ -32,3 +21,8 @@ class Augment
     end
   end
 end
+
+require 'backend'
+require 'frontend'
+
+Dir.glob(File.dirname(__FILE__) + '/*ends/*rb').each { |b| require b[0 .. -4] }

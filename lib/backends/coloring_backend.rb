@@ -21,3 +21,5 @@ class ColoringBackend < Backend
     end
   end
 end
+
+Augment::BACKENDS['color'] = ColoringBackend

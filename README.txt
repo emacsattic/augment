@@ -46,7 +46,7 @@ metadata, with the exception of auto-initiating backends like autotest.
 
 === Frontends
 
-Most frontends are implemented within an editor or IDE. They watche
+Most frontends are implemented within an editor or IDE. They watch
 the .augment directory for changes and apply them to the open buffers
 when they happen.  The user can choose what augmentations he wants
 displayed either globally or on a per-file basis. He can also control

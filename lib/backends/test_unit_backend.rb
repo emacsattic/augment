@@ -19,7 +19,7 @@ class TestUnitBackend < Backend
       @layers = {}
       
       load(file)
-      Test::Unit.autotest # this will call record_failure
+      Test::Unit.autotest # this will call record_failure as needed
       write_layers
     end
 
@@ -35,3 +35,5 @@ def Layer.from_failure(klass, method, exception)
   range = color == 'red' ? (228 ... 338) : (61 ... 103) # FIXME
   Layer.new(range, color, exception.message)
 end
+
+Augment::BACKENDS['test'] = TestUnitBackend

@@ -8,4 +8,4 @@ if ARGV.size != 2
   exit 1
 end
 
-Augment.new(ARGV[0]).run(ARGV[1])
+Augment.new(*ARGV)
