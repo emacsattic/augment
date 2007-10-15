@@ -1,3 +1,5 @@
+require 'json'
+
 class Layer
   def initialize(range, color, message)
     range = (range.split('...').first.to_i ... range.split('...').last.to_i) if range.is_a? String

@@ -3,9 +3,11 @@ $LOAD_PATH << File.dirname(__FILE__) + '/backends'
 $LOAD_PATH << File.dirname(__FILE__) + '/frontends'
 
 require 'rubygems'
-require 'json'
+
 require 'layer'
 require 'flet'
+require 'backend'
+require 'frontend'
 
 class Augment
   VERSION = '1.0.0'
@@ -21,8 +23,5 @@ class Augment
     end
   end
 end
-
-require 'backend'
-require 'frontend'
 
 Dir.glob(File.dirname(__FILE__) + '/*ends/*rb').each { |b| require b[0 .. -4] }
