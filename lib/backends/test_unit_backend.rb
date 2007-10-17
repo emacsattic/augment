@@ -23,16 +23,20 @@ class TestUnitBackend < Backend
       write_layers
     end
 
-    def record_failure(*args)
+    def record_failure(klass, method, exception)
       # FIXME: errors here could actually occur in impl rather than test file
-      (@layers[@file] ||= []) << Layer.from_failure(*args)
+      (@layers[@file] ||= []) << Layer.from_failure(@file, klass, method, exception)
     end
   end
 end
 
-def Layer.from_failure(klass, method, exception)
+def Layer.from_failure(file, klass, method, exception)
   color = Test::Assertion === exception ? 'red' : 'yellow'
-  range = color == 'red' ? (228 ... 338) : (61 ... 103) # FIXME
+
+  trace = exception.backtrace.detect { |e| e =~ /test_drink/ }
+  line = trace.match(/:(\d*):/)[1]
+
+  range = Layer.line_to_char_range(file, line.to_i)
   Layer.new(range, color, exception.message)
 end
 

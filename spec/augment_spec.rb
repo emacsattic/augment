@@ -46,7 +46,7 @@ describe Backend, " when augmenting test results" do
     layers.first['color'].should == 'red'
     layers.last['color'].should == 'yellow'
 
-    layers.first['range'].should == (228 ... 338)
+    layers.first['range'].should == (289 ... 332)
   end
   
   it "should include failure message" do
@@ -81,5 +81,13 @@ describe Frontend, " when outputting ANSI color" do
     output = `../../../bin/augment_color #{PROJECT_ROOT}/test/test_drink.rb`
     output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['red']}m *def/)
     output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['yellow']}m *def/)
+  end
+end
+
+describe Layer, " when converting line range to char range" do
+  it "should convert properly" do
+    Layer.line_range_to_char_range('test/test_drink.rb', (10 .. 10)).should == (177 .. 220)
+    Layer.line_range_to_char_range('test/test_drink.rb', (3 .. 6)).should == (62 .. 107)
+    Layer.line_range_to_char_range('test/test_drink.rb', (13 .. 17)).should == (229 .. 339)
   end
 end
