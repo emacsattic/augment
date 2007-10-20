@@ -51,18 +51,21 @@
 
 (defstruct layer begin end color message)
 
-(defun augment-layer-from-json (json-string)
-  (let* ((json (json-read-from-string json-string))
-	 (range (cdr (assoc 'range json))))
-    (setq l json)
-    (make-layer :begin (string-to-number (first (split-string range "\\.")))
-		:end (string-to-number (cadddr (split-string range "\\.")))
-		:color (cdr (assoc 'color json))
-		:message (cdr (assoc 'message json)))))
+(defun augment-layer-from-plist (plist)
+  (make-layer :begin (string-to-number (first (split-string (getf plist :range) "\\.")))
+	      :end (string-to-number (cadddr (split-string (getf plist :range) "\\.")))
+	      :color (getf plist :color)
+	      :message (getf plist :message)))
+
+(defun augment-layers-from-file (filename)
+  (let ((json-object-type 'plist))
+    (mapcar #'augment-layer-from-plist
+	    (json-read-file filename))))
   
+
 (define-minor-mode augment-mode
   "Major mode for showing code metadata.
-\\{test-unit-mode-map}"
+\\{augment-mode-map}"
 
   :lighter "-augment"
   :keymap (setq augment-mode-map (make-sparse-keymap))
@@ -88,7 +91,7 @@
 (defun augment-filter (process output)
   ;; SO bloody annoying; why can't processes do this by default?!
   ;; At least we can use the Power of Recursion (tm)!
-  (with-current-buffer test-unit-currently-running-buffer
+  (with-current-buffer augment-currently-running-buffer
     (if (string-match "\n" output)
 	(progn
 	  ;; Send everything up to the first newline to the real filter

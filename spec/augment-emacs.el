@@ -18,19 +18,20 @@
 
 (deftest layer-from-json augment-suite
   "The layer struct should populated from JSON."
-  (let ((layer (augment-layer-from-json "{\"message\":\"Found a white\",\"color\":\"white\",\"range\":\"221...226\"}")))
+  (let ((layer (augment-layer-from-plist (list :message "message" :color "color"
+					       :range "221...226"))))
     (assert-equal 221 (layer-begin layer))
     (assert-equal 226 (layer-end layer))
-    (assert-equal "white" (layer-color layer))
-    (assert-equal "Found a white" (layer-message layer))))
+    (assert-equal "color" (layer-color layer))
+    (assert-equal "message" (layer-message layer))))
 
-;; (deftest layer-file-load augment-suite
-;;   "Ensure that a whole layer file loads properly."
-;;   (let ((layers (augment-layers-from-file "fixtures/layers.json")))
-;;     (assert-equal 3 (length layers))
-;;     (assert-equal "cons" (layer-message (pop layers)))
-;;     (assert-equal "car" (layer-message (pop layers)))
-;;     (assert-equal "cdr" (layer-message (pop layers)))))
+(deftest layer-file-load augment-suite
+  "Ensure that a whole layer file loads properly."
+  (let ((layers (augment-layers-from-file "fixtures/layers.json")))
+    (assert-equal 3 (length layers))
+    (assert-equal "cons" (layer-message (pop layers)))
+    (assert-equal "car" (layer-message (pop layers)))
+    (assert-equal "cdr" (layer-message (pop layers)))))
 
 ;; (deftest render-layers augment-suite
 ;;   "Rendering layers should create overlays in a buffer."
