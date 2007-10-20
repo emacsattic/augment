@@ -45,14 +45,12 @@
     (assert-overlay 9))
   (kill-buffer "*augment-test*"))
 
-;; (deftest layer-message augment-suite
-;;   "Finding message at point should get the message of the layer the point is in."
-;;   (with-output-to-temp-buffer "*augment-test*"
-;;     ;; Fill the buffer with some garbage
-;;     (dotimes (i 5) (princ "hello world.\n"))
-;;     (augment-render-layers (augment-layers-from-file "fixtures/layers.json"))
-;;     (goto-char 30)
-;;     (assert-equal "cons" (augment-message-at-point))))
+(deftest layer-message augment-suite
+  "Finding message at point should get the message of the layer the point is in."
+  (let ((layers (augment-layers-from-file "fixtures/layers.json")))
+    (assert-equal "cons" (augment-message-at-point 5))
+    (assert-equal "car" (augment-message-at-point 12))
+    (assert-equal "cdr" (augment-message-at-point 22))))
 
 ;; (deftest watching augment-suite
 ;;   (let ((original-file "fixtures/drinks/lib/drink.rb")

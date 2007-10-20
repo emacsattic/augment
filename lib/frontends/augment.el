@@ -69,6 +69,25 @@
 (defun layer-face (layer)
   (list 'background-color (layer-color layer)))
 
+(defun augment-file-path (file)
+  (concat
+   (file-name-directory file)
+   ".augment/"
+   (file-name-nondirectory file)))
+
+(defun augment-message-at-point (&optional point)
+  ;; find the first layer that the point is between begin and end
+  (layer-message (find point layers :test
+		       (lambda (p l) (and (> p (layer-begin l))
+				     (< p (layer-end l)))))))
+
+(defun augment-buffer ()
+  (interactive)
+  ;; save this in a buffer-local variable so we can access its messages
+  (setq layers (augment-layers-from-file (augment-file-path (buffer-file-name))))
+  (dolist (layer layers)
+    (augment-render-layer layer)))
+  
 (define-minor-mode augment-mode
   "Major mode for showing code metadata.
 \\{augment-mode-map}"
@@ -87,6 +106,7 @@
   
   ;; a buffer where we wait for a complete line from the augment process
   (set (make-local-variable 'augment-incomplete-line) "")
+  (make-local-variable layers)
   (augment-watch))
 
 (defun augment-watch ()
