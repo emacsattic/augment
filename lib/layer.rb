@@ -10,12 +10,6 @@ class Layer
     JSON.parse(File.read(Augment.augment_path(original_file))).map{ |l| Layer.new(l['range'], l['color'], l['message']) }.sort_by{ |l| l['range'].begin }.reverse
   end
 
-  def self.line_range_to_char_range(file, lines)
-    file = File.read(file).split("\n")
-    (file[0 .. lines.first - 1].join("\n").size + 2 ..
-     file[0 .. lines.last].join("\n").size + 2)
-  end
-
   def self.line_to_char_range(file, line)
     file = File.read(file).split("\n")
     start = file[0 ... line - 1].join("\n").size + 2
