@@ -61,7 +61,13 @@
   (let ((json-object-type 'plist))
     (mapcar #'augment-layer-from-plist
 	    (json-read-file filename))))
-  
+
+(defun augment-render-layer (layer)
+  (overlay-put (make-overlay (layer-begin layer) (layer-end layer))
+	       'face (layer-face layer)))
+
+(defun layer-face (layer)
+  (list 'background-color (layer-color layer)))
 
 (define-minor-mode augment-mode
   "Major mode for showing code metadata.

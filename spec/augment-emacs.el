@@ -33,15 +33,17 @@
     (assert-equal "car" (layer-message (pop layers)))
     (assert-equal "cdr" (layer-message (pop layers)))))
 
-;; (deftest render-layers augment-suite
-;;   "Rendering layers should create overlays in a buffer."
-;;   (with-output-to-temp-buffer "*augment-test*"
-;;     ;; Fill the buffer with some garbage
-;;     (dotimes (i 5) (princ "hello world.\n"))
-;;     (augment-render-layers (augment-layers-from-file "fixtures/layers.json"))
-;;     (assert-overlay nil)
-;;     (assert-overlay nil)
-;;     (assert-overlay nil)))
+(deftest render-layers augment-suite
+  "Rendering layers should create overlays in a buffer."
+  (with-output-to-temp-buffer "*augment-test*"
+    ;; Fill the buffer with some garbage
+    (dotimes (i 5) (princ "hello world.\n"))
+    (augment-render-layer (augment-layer-from-plist (list :message "hello"
+							  :color "red"
+							  :range "0...10")))
+    (assert-overlay 1)
+    (assert-overlay 9))
+  (kill-buffer "*augment-test*"))
 
 ;; (deftest layer-message augment-suite
 ;;   "Finding message at point should get the message of the layer the point is in."
