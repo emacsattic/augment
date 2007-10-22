@@ -25,6 +25,10 @@ end
 
 class AnsiColorFrontend < Frontend
   class << self
+    def show(file)
+      puts super(file)
+    end
+    
     def process_layer(text, layer)
       text.colorize_range(layer['range'], layer['color'])
     end

@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+$LOAD_PATH << File.dirname(__FILE__) + '/../lib'
+
+require 'augment'
+
+if ARGV.size != 2
+  puts "Usage: augment FRONTEND FILE"
+  exit 1
+end
+
+Augment.output(*ARGV)

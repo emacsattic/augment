@@ -5,7 +5,7 @@ class Frontend
       layers = Layer.read(file)
 
       # TODO: deal with overlapping color ranges
-      puts layers.inject(text) { |layer_text, layer| process_layer(layer_text, layer) }
+      layers.inject(text) { |layer_text, layer| process_layer(layer_text, layer) }
     end
   end
 end

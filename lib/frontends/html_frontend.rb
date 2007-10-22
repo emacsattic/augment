@@ -9,6 +9,20 @@ class String
 end
 
 class HtmlFrontend < Frontend
+  class << self
+    def show(file)
+      puts "<html>
+  <head><title>#{file} - Augment</title></head>
+  <body>
+#{super(file).gsub("\n", "<br />")}
+  </body>
+</html>"
+    end
+    
+    def process_layer(text, layer)
+      text.html_colorize_range(layer['range'], layer['color'])
+    end
+  end
 end
 
 Augment::FRONTENDS['html'] = HtmlFrontend

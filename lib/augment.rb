@@ -19,6 +19,10 @@ class Augment
   end
 
   class << self
+    def output(frontend_name, file)
+      FRONTENDS[frontend_name].show(file)
+    end
+    
     def augment_path(original)
       "#{File.dirname(File.expand_path(original))}/.augment/#{File.basename(original)}"
     end
