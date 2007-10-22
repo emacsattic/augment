@@ -81,16 +81,17 @@
 	    (json-read-from-string string))))
 
 (defun augment-render-layer (layer)
+  "Create an overlay for a layer." ;; needs to be reimplemented for xemacs
   (overlay-put (make-overlay (layer-begin layer) (layer-end layer))
 	       'face (layer-face layer)))
 
 (defun layer-face (layer)
+  ;; could do some kind of transformation here for color themes.
   (cons 'background-color (layer-color layer)))
 
 (defun augment-file-path (file)
   (concat
-   (file-name-directory file)
-   ".augment/"
+   (file-name-directory file) ".augment/"
    (file-name-nondirectory file)))
 
 (defun augment-message-at-point (&optional point)
@@ -122,7 +123,8 @@
 
 (defun augment-start-process ()
   (unless (get-process "augment") ;; only one should be running at a time
-    (set-process-filter (start-process "augment" nil "augment" "background")
+    (set-process-filter (start-process "augment" nil ;; FIXME: don't hardcode path
+				       "/home/phil/projects/augment/bin/augment" "background")
 			'augment-filter-buffer)))
 
 ;; TODO: test me
@@ -134,7 +136,10 @@
 	;; Recurse on the rest
 	(augment-filter process (substring output (+ 1 (string-match augment-filter-file-regex output)))))
     ;; Save the remainder to a buffer
-    (setq augment-incomplete-buffer (concat augment-incomplete-buffer output))))
+    (if (string-match "^Error augmenting \\(.*\\)" output)
+	(progn (message "Error augmenting %s." (match-string 1 output))
+	       (setq augment-incomplete-buffer ""))
+      (setq augment-incomplete-buffer (concat augment-incomplete-buffer output)))))
 
 (defun augment-filter-buffer (process output buffer)
   (with-current-buffer buffer
