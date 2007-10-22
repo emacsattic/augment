@@ -39,7 +39,12 @@
 
 ;;; Todo:
 
+;; * Write augment-minor-mode
+;; * Watch for changes in the layer file
+
 ;;; Bugs:
+
+;; * Doesn't deal with overlapping layers. (won't fix for a while)
 
 ;;; Code:
 

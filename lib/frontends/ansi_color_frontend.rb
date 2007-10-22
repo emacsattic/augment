@@ -25,16 +25,10 @@ end
 
 class AnsiColorFrontend < Frontend
   class << self
-    def show(file)
-      text = File.read(file)
-      layers = Layer.read(file)
-
-      # TODO: deal with overlapping color ranges
-      layers.each do |layer|
-        text = text.colorize_range(layer['range'], layer['color'])
-      end
-
-      puts text
+    def process_layer(text, layer)
+      text.colorize_range(layer['range'], layer['color'])
     end
   end
 end
+
+Augment::FRONTENDS['ansi'] = AnsiColorFrontend

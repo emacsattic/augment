@@ -79,15 +79,15 @@ describe Frontend, " when outputting ANSI color" do
 
   it "should color the test_drink" do
     output = `../../../bin/augment_color #{PROJECT_ROOT}/test/test_drink.rb`
-    output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['red']}m *def/)
-    output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['yellow']}m *def/)
+    output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['red']}m *assert/)
+    output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['yellow']}m *junk/)
   end
 end
 
 describe Layer, " when converting line range to char range" do
   it "should convert properly" do
-    Layer.line_range_to_char_range('test/test_drink.rb', (10 .. 10)).should == (177 .. 220)
-    Layer.line_range_to_char_range('test/test_drink.rb', (3 .. 6)).should == (62 .. 107)
-    Layer.line_range_to_char_range('test/test_drink.rb', (13 .. 17)).should == (229 .. 339)
+    Layer.line_to_char_range('test/test_drink.rb', 10).should == (153 ... 176)
+    Layer.line_to_char_range('test/test_drink.rb', 3).should == (22 ... 61)
+    Layer.line_to_char_range('test/test_drink.rb', 17).should == (289 ... 332)
   end
 end

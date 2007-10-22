@@ -12,6 +12,7 @@ require 'frontend'
 class Augment
   VERSION = '1.0.0'
   BACKENDS = {}
+  FRONTENDS = {}
   
   def initialize(backend_name, file)
     BACKENDS[backend_name].run(file)
