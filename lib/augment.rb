@@ -19,6 +19,14 @@ class Augment
   end
 
   class << self
+    def background(backend_names = BACKENDS.keys)
+      while filename = gets.chomp
+        backend_names.each { |backend| BACKENDS[backend].run(filename) }
+        puts "Layers for #{filename}:"
+        puts File.read(augment_path(filename))
+      end
+    end
+    
     def output(frontend_name, file)
       FRONTENDS[frontend_name].show(file)
     end

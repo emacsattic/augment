@@ -16,12 +16,22 @@
 (elunit-clear-suites)
 (defsuite augment-suite nil)
 
-(deftest layer-from-json augment-suite
-  "The layer struct should populated from JSON."
+(deftest layer-from-plist augment-suite
+  "The layer struct should populated from a plist."
   (let ((layer (augment-layer-from-plist (list :message "message" :color "color"
 					       :range "221...226"))))
     (assert-equal 221 (layer-begin layer))
     (assert-equal 226 (layer-end layer))
+    (assert-equal "color" (layer-color layer))
+    (assert-equal "message" (layer-message layer))))
+
+(deftest layer-from-string augment-suite
+  "The layer struct should populated from a JSON string."
+  (let ((layer (first (augment-layers-from-string
+		       "[{\"message\":\"message\", \"color\":\"color\", \"range\":\"1...10\"}]"))))
+		       
+    (assert-equal 1 (layer-begin layer))
+    (assert-equal 10 (layer-end layer))
     (assert-equal "color" (layer-color layer))
     (assert-equal "message" (layer-message layer))))
 
@@ -51,10 +61,5 @@
     (assert-equal "cons" (augment-message-at-point 5))
     (assert-equal "car" (augment-message-at-point 12))
     (assert-equal "cdr" (augment-message-at-point 22))))
-
-;; (deftest watching augment-suite
-;;   (let ((original-file "fixtures/drinks/lib/drink.rb")
-;; 	(layer-file "fixtures/drinks/lib/.augment/drink.rb"))
-;;     (shell-command (concat "../bin/augment color " original-file))))
 
 (elunit "augment-suite")

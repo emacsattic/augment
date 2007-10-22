@@ -1,11 +1,8 @@
 class Frontend
   class << self
     def show(file)
-      text = File.read(file)
-      layers = Layer.read(file)
-
       # TODO: deal with overlapping color ranges
-      layers.inject(text) { |layer_text, layer| process_layer(layer_text, layer) }
+      Layer.read(file).inject(File.read(file)) { |text, layer| process_layer(text, layer) }
     end
   end
 end

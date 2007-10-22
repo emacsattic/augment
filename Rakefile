@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'hoe'
+require 'spec/rake/spectask'
 require './lib/augment.rb'
 
 Hoe.new('augment', Augment::VERSION) do |p|
@@ -19,5 +20,7 @@ end
 task :publish_html do
   system("scp -r html/* technomancy@rubyforge.org:/var/www/gforge-projects/augment/")
 end
+
+Spec::Rake::SpecTask.new
 
 # vim: syntax=Ruby

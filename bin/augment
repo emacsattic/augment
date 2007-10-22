@@ -8,4 +8,9 @@ if ARGV.size != 2
   exit 1
 end
 
+if ARGV.first == 'background'
+  Augment.background(*ARGV)
+  exit 0
+end
+
 Augment.new(*ARGV)

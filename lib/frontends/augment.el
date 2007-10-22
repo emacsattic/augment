@@ -31,11 +31,10 @@
 ;;; Commentary:
 
 ;; augment.el is a frontend for augment, a system for gathering and
-;; displaying metadata about code. augment.el is a frontend for
-;; augment, meaning that it's for displaying data that's been gathered
-;; and for initiating new augmentations.
+;; displaying metadata about code. It's a minor mode for displaying
+;; data that's been gathered and for initiating new augmentations.
 
-;; Tests are present in spec/augment-frontend.el
+;; Tests are present in spec/emacs-frontend-test.el
 
 ;;; Todo:
 
@@ -51,10 +50,15 @@
 (require 'cl)
 (require 'json) ;; See hober's http://edward.oconnor.cx/2006/03/json.el
 
-(defvar augment-file-extensions '(".rb")
-  "List of file extensions that augment activates for.")
+(defvar augmented-buffers ()
+  "List of all buffers currently being augmented.")
+
+(defvar augment-incomplete-line ""
+  "A buffer where we wait for a complete line from the augment process.")
 
 (defstruct layer begin end color message)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun augment-layer-from-plist (plist)
   (make-layer :begin (string-to-number (first (split-string (getf plist :range) "\\.")))
@@ -66,6 +70,11 @@
   (let ((json-object-type 'plist))
     (mapcar #'augment-layer-from-plist
 	    (json-read-file filename))))
+
+(defun augment-layers-from-string (string)
+  (let ((json-object-type 'plist))
+    (mapcar #'augment-layer-from-plist
+	    (json-read-from-string string))))
 
 (defun augment-render-layer (layer)
   (overlay-put (make-overlay (layer-begin layer) (layer-end layer))
@@ -89,49 +98,52 @@
 (defun augment-buffer ()
   (interactive)
   ;; save this in a buffer-local variable so we can access its messages
+  (remove-overlays)
   (setq layers (augment-layers-from-file (augment-file-path (buffer-file-name))))
   (dolist (layer layers)
     (augment-render-layer layer)))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define-minor-mode augment-mode
   "Major mode for showing code metadata.
+
 \\{augment-mode-map}"
 
-  :lighter "-augment"
   :keymap (setq augment-mode-map (make-sparse-keymap))
 
-  (define-key augment-mode-map
-    "\C-c\C-s" 'augment-initiate)
-  (define-key augment-mode-map
-    "\C-c\C-i" 'augment-show-info)
-  (define-key augment-mode-map
-    "\C-c\C-k" 'augment-clear)
-  (define-key augment-mode-map
-    "\C-x`" 'augment-jump-to-next-message)
-  
-  ;; a buffer where we wait for a complete line from the augment process
-  (set (make-local-variable 'augment-incomplete-line) "")
-  (make-local-variable layers)
-  (augment-watch))
+  (make-local-variable 'layers)
 
-(defun augment-watch ()
-  (set-process-filter (start-process "augment" nil
-				     "augment-out" "--watch" (buffer-file-name))
-		      'augment-filter))
+  (make-local-variable 'after-save-hook)
+  (add-hook 'after-save-hook 'augment-initiate)
+
+  (add-to-list 'augmented-buffers (buffer-file-name))
+  (augment-start-process)
+  (augment-initiate (buffer-file-name)))
+
+(defun augment-initiate (&optional file)
+  (process-send-string "augment" (or file (buffer-file-name))))
+
+(defun augment-start-process ()
+  (unless (get-process "augment") ;; only one should be running at a time
+    (set-process-filter (start-process "augment" nil "augment" "background")
+			'augment-filter-buffer)))
 
 (defun augment-filter (process output)
   ;; SO bloody annoying; why can't processes do this by default?!
   ;; At least we can use the Power of Recursion (tm)!
-  (with-current-buffer augment-currently-running-buffer
-    (if (string-match "\n" output)
-	(progn
-	  ;; Send everything up to the first newline to the real filter
-	  (funcall test-filter-function
-		   process (concat test-unit-incomplete-line (car (split-string output "\n"))))
-	  ;; Recurse on the rest
-	  (test-unit-filter process (substring output (+ 1 (string-match "\n" output)))))
-      ;; Save the remainder to a buffer
-      (setq test-unit-incomplete-line (concat test-unit-incomplete-line output)))))
+  (if (string-match "\n" output)
+      (progn
+	;; Send everything up to the first newline to the real filter
+	(augment-filter-line process (concat augment-incomplete-line (car (split-string output "\n"))))
+	;; Recurse on the rest
+	(augment-filter process (substring output (+ 1 (string-match "\n" output)))))
+    ;; Save the remainder to a buffer
+    (setq augment-incomplete-line (concat augment-incomplete-line output))))
+
+(defun augment-filter-line (process line)
+  ;; TODO: write me
+  )
 
 (provide 'augment)
 ;;; augment.el ends here
