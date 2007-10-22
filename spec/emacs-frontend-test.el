@@ -59,7 +59,15 @@
   "Finding message at point should get the message of the layer the point is in."
   (let ((layers (augment-layers-from-file "fixtures/layers.json")))
     (assert-equal "cons" (augment-message-at-point 5))
-    (assert-equal "car" (augment-message-at-point 12))
-    (assert-equal "cdr" (augment-message-at-point 22))))
+    (assert-equal "car" (augment-message-at-point 16))
+    (assert-equal "cdr" (augment-message-at-point 29))))
 
+(deftest augment-filter augment-suite
+  (with-output-to-temp-buffer "*augment-test*"
+    (make-local-variable 'layers)
+    (dotimes (i 3) (princ "hello world\n"))
+    (augment-filter-buffer nil (flymake-read-file-to-string "fixtures/augment-output.txt") "*augment-test*")
+    (assert-overlay 1))
+  (kill-buffer "*augment-test*"))
+  
 (elunit "augment-suite")

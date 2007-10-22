@@ -18,7 +18,7 @@ class TestUnitBackend < Backend
       @file = file
       @layers = {}
       
-      load(file)
+      load(find_test_for(file))
       Test::Unit.autotest # this will call record_failure as needed
       write_layers
     end
@@ -26,6 +26,11 @@ class TestUnitBackend < Backend
     def record_failure(klass, method, exception)
       # FIXME: errors here could actually occur in impl rather than test file
       (@layers[@file] ||= []) << Layer.from_failure(@file, klass, method, exception)
+    end
+
+    def find_test_for(file)
+      # TODO: return test for implementation if possible
+      file
     end
   end
 end

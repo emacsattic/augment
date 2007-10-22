@@ -53,14 +53,18 @@
 (defvar augmented-buffers ()
   "List of all buffers currently being augmented.")
 
-(defvar augment-incomplete-line ""
-  "A buffer where we wait for a complete line from the augment process.")
+(defvar augment-incomplete-buffer ""
+  "A buffer where we wait for a complete set of layers from the augment process.")
+
+(defconst augment-filter-file-regex "End layers for [^\n]+\n"
+  "The delimiter to let us know know when a file is done being output.")
 
 (defstruct layer begin end color message)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun augment-layer-from-plist (plist)
+  "Make a layers struct from a plist."
   (make-layer :begin (string-to-number (first (split-string (getf plist :range) "\\.")))
 	      :end (string-to-number (cadddr (split-string (getf plist :range) "\\.")))
 	      :color (getf plist :color)
@@ -81,7 +85,7 @@
 	       'face (layer-face layer)))
 
 (defun layer-face (layer)
-  (list 'background-color (layer-color layer)))
+  (cons 'background-color (layer-color layer)))
 
 (defun augment-file-path (file)
   (concat
@@ -94,14 +98,6 @@
   (layer-message (find point layers :test
 		       (lambda (p l) (and (> p (layer-begin l))
 				     (< p (layer-end l)))))))
-
-(defun augment-buffer ()
-  (interactive)
-  ;; save this in a buffer-local variable so we can access its messages
-  (remove-overlays)
-  (setq layers (augment-layers-from-file (augment-file-path (buffer-file-name))))
-  (dolist (layer layers)
-    (augment-render-layer layer)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -129,21 +125,29 @@
     (set-process-filter (start-process "augment" nil "augment" "background")
 			'augment-filter-buffer)))
 
+;; TODO: test me
 (defun augment-filter (process output)
-  ;; SO bloody annoying; why can't processes do this by default?!
-  ;; At least we can use the Power of Recursion (tm)!
-  (if (string-match "\n" output)
+  (if (string-match augment-filter-file-regex output)
       (progn
 	;; Send everything up to the first newline to the real filter
-	(augment-filter-line process (concat augment-incomplete-line (car (split-string output "\n"))))
+	(augment-filter-buffer process (concat augment-incomplete-buffer (car (split-string output augment-filter-file-regex))))
 	;; Recurse on the rest
-	(augment-filter process (substring output (+ 1 (string-match "\n" output)))))
+	(augment-filter process (substring output (+ 1 (string-match augment-filter-file-regex output)))))
     ;; Save the remainder to a buffer
-    (setq augment-incomplete-line (concat augment-incomplete-line output))))
+    (setq augment-incomplete-buffer (concat augment-incomplete-buffer output))))
 
-(defun augment-filter-line (process line)
-  ;; TODO: write me
-  )
+(defun augment-filter-buffer (process output buffer)
+  (with-current-buffer buffer
+    (setq layers (augment-layers-from-string (augment-strip-foot output)))
+    (augment-buffer layers)))
+
+(defun augment-strip-foot (output)
+  (apply #'concat (subseq (split-string output "\n") 0 -2)))
+  
+(defun augment-buffer (layers)
+  (remove-overlays)
+  (dolist (layer layers)
+    (augment-render-layer layer)))
 
 (provide 'augment)
 ;;; augment.el ends here
