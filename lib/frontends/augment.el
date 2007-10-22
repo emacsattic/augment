@@ -56,7 +56,7 @@
 (defvar augment-incomplete-buffer ""
   "A buffer where we wait for a complete set of layers from the augment process.")
 
-(defconst augment-filter-file-regex "End layers for [^\n]+\n"
+(defconst augment-filter-file-regex "End layers for \\([^\n]+\\)\n"
   "The delimiter to let us know know when a file is done being output.")
 
 (defstruct layer begin end color message)
@@ -109,40 +109,47 @@
 
   :keymap (setq augment-mode-map (make-sparse-keymap))
 
+  (define-key augment-mode-map (kbd "C-c C-s") 'augment-initiate)
+  (define-key augment-mode-map (kbd "C-c C-k") 'augment-clear)
+  
   (make-local-variable 'layers)
 
   (make-local-variable 'after-save-hook)
   (add-hook 'after-save-hook 'augment-initiate)
 
   (add-to-list 'augmented-buffers (buffer-file-name))
-  (augment-start-process)
   (augment-initiate (buffer-file-name)))
 
 (defun augment-initiate (&optional file)
-  (process-send-string "augment" (or file (buffer-file-name))))
+  (interactive)
+  (setq layers nil)
+  (augment-start-process)
+  (process-send-string "augment" (concat (or file (buffer-file-name)) "\n")))
 
 (defun augment-start-process ()
   (unless (get-process "augment") ;; only one should be running at a time
-    (set-process-filter (start-process "augment" nil ;; FIXME: don't hardcode path
+    (set-process-filter
+     (start-process "augment" "*augment-out*" ;; FIXME: don't hardcode path
 				       "/home/phil/projects/augment/bin/augment" "background")
-			'augment-filter-buffer)))
+     'augment-filter)))
 
-;; TODO: test me
 (defun augment-filter (process output)
-  (if (string-match augment-filter-file-regex output)
-      (progn
-	;; Send everything up to the first newline to the real filter
-	(augment-filter-buffer process (concat augment-incomplete-buffer (car (split-string output augment-filter-file-regex))))
-	;; Recurse on the rest
-	(augment-filter process (substring output (+ 1 (string-match augment-filter-file-regex output)))))
-    ;; Save the remainder to a buffer
-    (if (string-match "^Error augmenting \\(.*\\)" output)
-	(progn (message "Error augmenting %s." (match-string 1 output))
-	       (setq augment-incomplete-buffer ""))
-      (setq augment-incomplete-buffer (concat augment-incomplete-buffer output)))))
+  (if (not (string-match augment-filter-file-regex output))
+      ;; Haven't yet received all the file's layersn
+      (if (string-match "^Error augmenting \\(.*\\)" output)
+	  (progn (setq augment-incomplete-buffer "")
+		 (error "Error augmenting %s." (match-string 1 output)))
+	;; Push it on to the incomplete buffer
+	(setq augment-incomplete-buffer (concat augment-incomplete-buffer output)))
+    ;; Send it to the real filter
+    (setq augment-incomplete-buffer "")
+    (augment-filter-buffer process
+			   (concat augment-incomplete-buffer output)
+			   (file-name-nondirectory (match-string 1 output)))))
 
-(defun augment-filter-buffer (process output buffer)
-  (with-current-buffer buffer
+(defun augment-filter-buffer (process output &optional buffer)
+  (with-current-buffer (substring buffer 0 -1)
+    (setq out output)
     (setq layers (augment-layers-from-string (augment-strip-foot output)))
     (augment-buffer layers)))
 
@@ -150,9 +157,18 @@
   (apply #'concat (subseq (split-string output "\n") 0 -2)))
   
 (defun augment-buffer (layers)
-  (remove-overlays)
+  (augment-clear)
   (dolist (layer layers)
     (augment-render-layer layer)))
+
+(defun augment-clear ()
+  (interactive)
+  (remove-overlays))
+
+(defun augment-reset ()
+  (interactive)
+  (kill-process "augment")
+  (augment-clear))
 
 (provide 'augment)
 ;;; augment.el ends here

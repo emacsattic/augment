@@ -17,9 +17,10 @@ class TestUnitBackend < Backend
     def run(file)
       @file = file
       @layers = {}
-      
+
       load(find_test_for(file))
-      Test::Unit.autotest # this will call record_failure as needed
+      # this will call record_failure as needed
+      with_no_output { Test::Unit.autotest }
       write_layers
     end
 
@@ -31,6 +32,13 @@ class TestUnitBackend < Backend
     def find_test_for(file)
       # TODO: return test for implementation if possible
       file
+    end
+
+    def with_no_output
+      old_stdout = $stdout.clone
+      $stdout.reopen(File.new('/dev/null','w'))
+      yield
+      $stdout.reopen(old_stdout)
     end
   end
 end
