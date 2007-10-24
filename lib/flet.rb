@@ -19,7 +19,7 @@ if $0 == __FILE__
   puts "foo" # should output "foo"
   
   Object.flet(:puts => lambda { |str| print "#{str.reverse}\n" }) do
-    puts "foo" # should output "foofoofoo"
+    puts "foo" # should output "oof"
   end
 
   puts "foo" # should output "foo"

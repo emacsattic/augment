@@ -1,0 +1,3 @@
+{"/home/foo/*augment-test*":[{"message":"cons", "color":"red", "range":"1...12"},
+ {"message":"car", "color":"green", "range":"13...24"},
+ {"message":"cdr", "color":"blue", "range":"25...36"}]}

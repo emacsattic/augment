@@ -29,19 +29,10 @@
   "The layer struct should populated from a JSON string."
   (let ((layer (first (augment-layers-from-string
 		       "[{\"message\":\"message\", \"color\":\"color\", \"range\":\"1...10\"}]"))))
-		       
     (assert-equal 1 (layer-begin layer))
     (assert-equal 10 (layer-end layer))
     (assert-equal "color" (layer-color layer))
     (assert-equal "message" (layer-message layer))))
-
-(deftest layer-file-load augment-suite
-  "Ensure that a whole layer file loads properly."
-  (let ((layers (augment-layers-from-file "fixtures/layers.json")))
-    (assert-equal 3 (length layers))
-    (assert-equal "cons" (layer-message (pop layers)))
-    (assert-equal "car" (layer-message (pop layers)))
-    (assert-equal "cdr" (layer-message (pop layers)))))
 
 (deftest render-layers augment-suite
   "Rendering layers should create overlays in a buffer."
@@ -66,8 +57,8 @@
   (with-output-to-temp-buffer "*augment-test*"
     (make-local-variable 'layers)
     (dotimes (i 3) (princ "hello world\n"))
-    (augment-filter-buffer nil (flymake-read-file-to-string "fixtures/augment-output.txt") "*augment-test*")
-    (assert-overlay 1))
+    (augment-filter nil (flymake-read-file-to-string "fixtures/augment-output.txt"))
+    (assert-overlay 2))
   (kill-buffer "*augment-test*"))
-  
+
 (elunit "augment-suite")

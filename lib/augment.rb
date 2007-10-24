@@ -24,8 +24,7 @@ class Augment
         begin
           filename = STDIN.gets.chomp
           backend_names.each { |backend| BACKENDS[backend].run(filename) }
-          puts File.read(augment_path(filename))
-          puts "End layers for #{filename}."
+          puts "{\"#{filename}\" : #{File.read(augment_path(filename))} }"
         rescue
           puts "Error augmenting #{filename}."
         end

@@ -38,20 +38,16 @@
 
 ;;; Todo:
 
-;; * Write augment-minor-mode
-;; * Watch for changes in the layer file
-
 ;;; Bugs:
 
 ;; * Doesn't deal with overlapping layers. (won't fix for a while)
+;; * Sometimes we just get the "End of layers" message in the filter.
+;;   Haven't figured out how to consistently reproduce the error.
 
 ;;; Code:
 
 (require 'cl)
 (require 'json) ;; See hober's http://edward.oconnor.cx/2006/03/json.el
-
-(defvar augmented-buffers ()
-  "List of all buffers currently being augmented.")
 
 (defvar augment-incomplete-buffer ""
   "A buffer where we wait for a complete set of layers from the augment process.")
@@ -70,15 +66,13 @@
 	      :color (getf plist :color)
 	      :message (getf plist :message)))
 
-(defun augment-layers-from-file (filename)
-  (let ((json-object-type 'plist))
-    (mapcar #'augment-layer-from-plist
-	    (json-read-file filename))))
-
 (defun augment-layers-from-string (string)
   (let ((json-object-type 'plist))
     (mapcar #'augment-layer-from-plist
 	    (json-read-from-string string))))
+
+(defun augment-layers-from-file (filename)
+  (augment-layers-from-string (flymake-read-file-to-string filename)))
 
 (defun augment-render-layer (layer)
   "Create an overlay for a layer." ;; needs to be reimplemented for xemacs
@@ -95,8 +89,9 @@
    (file-name-nondirectory file)))
 
 (defun augment-message-at-point (&optional point)
+  (interactive)
   ;; find the first layer that the point is between begin and end
-  (layer-message (find point layers :test
+  (layer-message (find (or point (point)) layers :test
 		       (lambda (p l) (and (> p (layer-begin l))
 				     (< p (layer-end l)))))))
 
@@ -111,18 +106,19 @@
 
   (define-key augment-mode-map (kbd "C-c C-s") 'augment-initiate)
   (define-key augment-mode-map (kbd "C-c C-k") 'augment-clear)
+  (define-key augment-mode-map (kbd "C-c C-i") 'augment-message-at-point)
   
   (make-local-variable 'layers)
 
   (make-local-variable 'after-save-hook)
   (add-hook 'after-save-hook 'augment-initiate)
 
-  (add-to-list 'augmented-buffers (buffer-file-name))
   (augment-initiate (buffer-file-name)))
 
 (defun augment-initiate (&optional file)
   (interactive)
   (setq layers nil)
+  (augment-clear)
   (augment-start-process)
   (process-send-string "augment" (concat (or file (buffer-file-name)) "\n")))
 
@@ -134,35 +130,27 @@
      'augment-filter)))
 
 (defun augment-filter (process output)
-  (if (not (string-match augment-filter-file-regex output))
-      ;; Haven't yet received all the file's layersn
-      (if (string-match "^Error augmenting \\(.*\\)" output)
-	  (progn (setq augment-incomplete-buffer "")
-		 (error "Error augmenting %s." (match-string 1 output)))
-	;; Push it on to the incomplete buffer
-	(setq augment-incomplete-buffer (concat augment-incomplete-buffer output)))
-    ;; Send it to the real filter
-    (setq augment-incomplete-buffer "")
-    (augment-filter-buffer process
-			   (concat augment-incomplete-buffer output)
-			   (file-name-nondirectory (match-string 1 output)))))
+  (if (string-match "^Error augmenting \\(.*\\)\\." output)
+      (error "Error augmenting %s." (match-string 1 output))
+    ;; layers need to be cached in local var for messages
+    (let* ((json-object-type 'plist)
+	   (json-array-type 'list)
+	   (all-layers (json-read-from-string output)))
+      (while all-layers
+	;; gotta remove the colon from the plisted filename
+	(let ((filename (substring (symbol-name (pop all-layers)) 1 nil))
+	      (layer-plists (pop all-layers)))
+	  (with-current-buffer (file-name-nondirectory filename)
+	    (setq layers (mapcar #'augment-layer-from-plist layer-plists))
+	    (augment-buffer layers)))))))
 
-(defun augment-filter-buffer (process output &optional buffer)
-  (with-current-buffer (substring buffer 0 -1)
-    (setq out output)
-    (setq layers (augment-layers-from-string (augment-strip-foot output)))
-    (augment-buffer layers)))
-
-(defun augment-strip-foot (output)
-  (apply #'concat (subseq (split-string output "\n") 0 -2)))
-  
 (defun augment-buffer (layers)
-  (augment-clear)
   (dolist (layer layers)
     (augment-render-layer layer)))
 
 (defun augment-clear ()
   (interactive)
+  (setq augment-incomplete-buffer "")
   (remove-overlays))
 
 (defun augment-reset ()
