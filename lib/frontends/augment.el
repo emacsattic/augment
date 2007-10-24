@@ -38,22 +38,12 @@
 
 ;;; Todo:
 
-;;; Bugs:
-
-;; * Doesn't deal with overlapping layers. (won't fix for a while)
-;; * Sometimes we just get the "End of layers" message in the filter.
-;;   Haven't figured out how to consistently reproduce the error.
+;; * Support overlapping layers
 
 ;;; Code:
 
 (require 'cl)
 (require 'json) ;; See hober's http://edward.oconnor.cx/2006/03/json.el
-
-(defvar augment-incomplete-buffer ""
-  "A buffer where we wait for a complete set of layers from the augment process.")
-
-(defconst augment-filter-file-regex "End layers for \\([^\n]+\\)\n"
-  "The delimiter to let us know know when a file is done being output.")
 
 (defstruct layer begin end color message)
 
@@ -65,14 +55,6 @@
 	      :end (string-to-number (cadddr (split-string (getf plist :range) "\\.")))
 	      :color (getf plist :color)
 	      :message (getf plist :message)))
-
-(defun augment-layers-from-string (string)
-  (let ((json-object-type 'plist))
-    (mapcar #'augment-layer-from-plist
-	    (json-read-from-string string))))
-
-(defun augment-layers-from-file (filename)
-  (augment-layers-from-string (flymake-read-file-to-string filename)))
 
 (defun augment-render-layer (layer)
   "Create an overlay for a layer." ;; needs to be reimplemented for xemacs
@@ -150,7 +132,6 @@
 
 (defun augment-clear ()
   (interactive)
-  (setq augment-incomplete-buffer "")
   (remove-overlays))
 
 (defun augment-reset ()

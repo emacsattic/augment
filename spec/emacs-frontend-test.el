@@ -12,6 +12,7 @@
 
 (require 'elunit) ;; See http://www.emacswiki.org/cgi-bin/wiki/ElUnit
 (require 'augment)
+(require 'flymake)
 
 (elunit-clear-suites)
 (defsuite augment-suite nil)
@@ -25,40 +26,35 @@
     (assert-equal "color" (layer-color layer))
     (assert-equal "message" (layer-message layer))))
 
-(deftest layer-from-string augment-suite
-  "The layer struct should populated from a JSON string."
-  (let ((layer (first (augment-layers-from-string
-		       "[{\"message\":\"message\", \"color\":\"color\", \"range\":\"1...10\"}]"))))
-    (assert-equal 1 (layer-begin layer))
-    (assert-equal 10 (layer-end layer))
-    (assert-equal "color" (layer-color layer))
-    (assert-equal "message" (layer-message layer))))
-
+(deftest augment-file-path augment-suite
+  (assert-equal "/foo/bar/.augment/baz.rb" (augment-file-path "/foo/bar/baz.rb")))
+  
 (deftest render-layers augment-suite
   "Rendering layers should create overlays in a buffer."
-  (with-output-to-temp-buffer "*augment-test*"
+  (with-test-buffer
     ;; Fill the buffer with some garbage
-    (dotimes (i 5) (princ "hello world.\n"))
+    (dotimes (i 5) (insert "hello world.\n"))
     (augment-render-layer (augment-layer-from-plist (list :message "hello"
 							  :color "red"
 							  :range "0...10")))
     (assert-overlay 1)
-    (assert-overlay 9))
-  (kill-buffer "*augment-test*"))
+    (assert-overlay 9)))
 
 (deftest layer-message augment-suite
   "Finding message at point should get the message of the layer the point is in."
-  (let ((layers (augment-layers-from-file "fixtures/layers.json")))
+  (let* ((json-object-type 'plist)
+	 (json-array-type 'list)
+	 (layers (mapcar #'augment-layer-from-plist
+			 (json-read-file "fixtures/layers.json"))))
     (assert-equal "cons" (augment-message-at-point 5))
     (assert-equal "car" (augment-message-at-point 16))
     (assert-equal "cdr" (augment-message-at-point 29))))
 
 (deftest augment-filter augment-suite
-  (with-output-to-temp-buffer "*augment-test*"
+  (with-test-buffer
     (make-local-variable 'layers)
-    (dotimes (i 3) (princ "hello world\n"))
+    (dotimes (i 3) (insert "hello world\n"))
     (augment-filter nil (flymake-read-file-to-string "fixtures/augment-output.txt"))
-    (assert-overlay 2))
-  (kill-buffer "*augment-test*"))
+    (assert-overlay 2)))
 
 (elunit "augment-suite")
