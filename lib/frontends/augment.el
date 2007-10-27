@@ -107,8 +107,8 @@
 (defun augment-start-process ()
   (unless (get-process "augment") ;; only one should be running at a time
     (set-process-filter
-     (start-process "augment" "*augment-out*" ;; FIXME: don't hardcode path
-				       "/home/phil/projects/augment/bin/augment" "background")
+     (start-process "augment" "*augment-out*"
+		    "augment" "--interactive")
      'augment-filter)))
 
 (defun augment-filter (process output)

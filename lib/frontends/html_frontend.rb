@@ -10,7 +10,7 @@ end
 
 class HtmlFrontend < Frontend
   class << self
-    def show(file)
+    def run(file)
       puts "<html>
   <head><title>#{file} - Augment</title></head>
   <body>

@@ -3,12 +3,14 @@ $LOAD_PATH << File.dirname(__FILE__) + '/../lib'
 
 require 'augment'
 
-if ARGV.first == 'background'
-  Augment.background
+if ARGV.first == '--interactive'
+  Augment.interactive
   exit 0
 elsif ARGV.size != 2
-  puts "Usage: augment BACKEND FILE"
+  puts "Usage: augment BACKEND/FRONTEND FILE"
+  puts "   or: augment --interactive"
+  puts "Output or store metadata regarding code."
   exit 1
 end
 
-Augment.new(*ARGV)
+Augment.new Augment::BACKENDS[ARGV[0]] || Augment::FRONTENDS[ARGV[0]], ARGV[1]
