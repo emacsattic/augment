@@ -14,6 +14,9 @@
 (require 'augment)
 (require 'flymake)
 
+;; in case it hasn't been properly installed
+(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "../bin")))
+
 (elunit-clear-suites)
 (defsuite augment-suite nil)
 

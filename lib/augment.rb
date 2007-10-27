@@ -14,12 +14,13 @@ class Augment
   BACKENDS = {}
   FRONTENDS = {}
   
-  def initialize(backend_name, file)
-    BACKENDS[backend_name].run(file)
+  def initialize(action, file)
+    raise "No backend or frontend with that name." if action.nil?
+    action.run(file)
   end
 
   class << self
-    def background(backend_names = 'test')
+    def interactive(backend_names = 'test')
       while true
         begin
           filename = STDIN.gets.chomp
@@ -29,10 +30,6 @@ class Augment
           puts "Error augmenting #{filename}."
         end
       end
-    end
-    
-    def output(frontend_name, file)
-      FRONTENDS[frontend_name].show(file)
     end
     
     def augment_path(original)

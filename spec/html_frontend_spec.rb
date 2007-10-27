@@ -10,7 +10,7 @@ describe Frontend, " when outputting HTML" do
   end
 
   it "should create styled spans around colors" do
-    output = `../../../bin/augment-out html #{PROJECT_ROOT}/lib/drink.rb`
+    output = `../../../bin/augment html #{PROJECT_ROOT}/lib/drink.rb`
     output.to_s.should include("<span style='color: white;'>white</span>")
   end
 end

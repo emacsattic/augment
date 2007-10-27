@@ -25,7 +25,7 @@ end
 
 class AnsiColorFrontend < Frontend
   class << self
-    def show(file)
+    def run(file)
       puts super(file)
     end
     
