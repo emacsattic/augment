@@ -27,5 +27,6 @@ describe Backend, " when augmenting by color" do
     layers[1]['range'].should == (456 ... 461)
     layers[2]['range'].should == (371 ... 374)
     layers[3]['range'].should == (221 ... 226)
+    layers.map{ |l| l['backend'] }.uniq.should == ['coloring']
   end
 end

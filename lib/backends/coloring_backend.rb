@@ -12,7 +12,7 @@ class ColoringBackend < Backend
         offset = 0
         while occurance = text.index(color, offset) do
           (@layers[file] ||= []) << Layer.new((occurance ... occurance + color.length),
-                                              color, "Found a #{color}")
+                                              color, "Found a #{color}", self)
           offset += (occurance + 1)
         end
       end

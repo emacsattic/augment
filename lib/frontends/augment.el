@@ -45,7 +45,7 @@
 (require 'cl)
 (require 'json) ;; See hober's http://edward.oconnor.cx/2006/03/json.el
 
-(defstruct layer begin end color message)
+(defstruct layer begin end color message backend)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
