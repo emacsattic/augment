@@ -23,5 +23,6 @@ describe Backend, " when augmenting test results" do
     layers = Layer.read('test/test_drink.rb')
     layers.first['message'].should =~ /bad length/
     layers.last['message'].should =~ /undefined local variable or method/
+    layers.map{ |l| l['backend'] }.uniq.should == ['testunit']
   end
 end

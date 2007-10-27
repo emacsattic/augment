@@ -50,7 +50,7 @@ def Layer.from_failure(file, klass, method, exception)
   line = trace.match(/:(\d*):/)[1]
 
   range = Layer.line_to_char_range(file, line.to_i)
-  Layer.new(range, color, exception.message)
+  Layer.new(range, color, exception.message, TestUnitBackend)
 end
 
 Augment::BACKENDS['test'] = TestUnitBackend
