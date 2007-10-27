@@ -36,6 +36,11 @@
 
 ;; Tests are present in spec/emacs-frontend-test.el
 
+;;; Installation:
+
+;; Put this file on your load-path and add "(require 'augment)" to
+;; your .emacs file.
+
 ;;; Todo:
 
 ;; * Support overlapping layers

@@ -14,7 +14,7 @@ class HtmlFrontend < Frontend
       puts "<html>
   <head><title>#{file} - Augment</title></head>
   <body>
-#{super(file).gsub("\n", "<br />")}
+#{super(file).gsub("\n", "<br />").gsub('  ', '&nbsp; ')}
   </body>
 </html>"
     end
