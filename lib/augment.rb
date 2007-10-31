@@ -21,7 +21,7 @@ class Augment
 
   class << self
     def interactive(backend_names = 'test')
-      while true
+      loop do
         begin
           filename = STDIN.gets.chomp
           backend_names.each { |backend| BACKENDS[backend].run(filename) }
