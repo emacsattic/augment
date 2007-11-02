@@ -49,9 +49,9 @@
 	 (json-array-type 'list)
 	 (layers (mapcar #'augment-layer-from-plist
 			 (json-read-file "fixtures/layers.json"))))
-    (assert-equal "cons" (augment-message-at-point 5))
-    (assert-equal "car" (augment-message-at-point 16))
-    (assert-equal "cdr" (augment-message-at-point 29))))
+    (assert-equal "cons" (augment-show-message 5))
+    (assert-equal "car" (augment-show-message 16))
+    (assert-equal "cdr" (augment-show-message 29))))
 
 (deftest augment-filter augment-suite
   (with-test-buffer

@@ -5,11 +5,9 @@ Object.flet(:at_exit => lambda {}) do
 end
 
 module Test
-  def Unit.puke(*args) # pass on failure info
-    TestUnitBackend.record_failure(*args)
+  def Unit.puke(*args) # puke in a bucket
+    TestUnitBackend.failure_bucket(*args)
   end
-
-  def Unit.puts(*args); end # muffle test output
 end
 
 class TestUnitBackend < Backend
@@ -24,7 +22,7 @@ class TestUnitBackend < Backend
       write_layers
     end
 
-    def record_failure(klass, method, exception)
+    def failure_bucket(klass, method, exception)
       # FIXME: errors here could actually occur in impl rather than test file
       (@layers[@file] ||= []) << Layer.from_failure(@file, klass, method, exception)
     end
@@ -33,16 +31,12 @@ class TestUnitBackend < Backend
       # TODO: return test for implementation if possible
       file
     end
-
-    def with_no_output
-      old_stdout = $stdout.clone
-      $stdout.reopen(File.new('/dev/null','w'))
-      yield
-      $stdout.reopen(old_stdout)
-    end
   end
+  
+  Augment::BACKENDS['test'] = self
 end
 
+# TODO: let Layer.new handle this by using a Fixnum instead of range
 def Layer.from_failure(file, klass, method, exception)
   color = Test::Assertion === exception ? 'red' : 'yellow'
 
@@ -52,5 +46,3 @@ def Layer.from_failure(file, klass, method, exception)
   range = Layer.line_to_char_range(file, line.to_i)
   Layer.new(range, color, exception.message, TestUnitBackend)
 end
-
-Augment::BACKENDS['test'] = TestUnitBackend
