@@ -70,7 +70,7 @@
    (file-name-directory file) ".augment/"
    (file-name-nondirectory file)))
 
-(defun augment-message-at-point (&optional point)
+(defun augment-show-message (&optional point)
   (interactive)
   ;; find the first layer that the point is between begin and end
   (layer-message (find (or point (point)) layers :test
@@ -88,7 +88,7 @@
 
   (define-key augment-mode-map (kbd "C-c C-s") 'augment-initiate)
   (define-key augment-mode-map (kbd "C-c C-k") 'augment-clear)
-  (define-key augment-mode-map (kbd "C-c C-i") 'augment-message-at-point)
+  (define-key augment-mode-map (kbd "C-c C-i") 'augment-show-message)
   
   (make-local-variable 'layers)
 

@@ -30,9 +30,8 @@ class AnsiColorFrontend < Frontend
     end
     
     def process_layer(text, layer)
-      text.colorize_range(layer['range'], layer['color'])
+      text.colorize_range(layer.range, layer.color)
     end
   end
+  Augment::FRONTENDS['ansi'] = self
 end
-
-Augment::FRONTENDS['ansi'] = AnsiColorFrontend

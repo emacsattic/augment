@@ -18,15 +18,15 @@ describe Backend, " when augmenting by color" do
     layers = Layer.read('lib/drink.rb')
     layers.size.should == 4
 
-    layers[0]['color'].should == 'black'
-    layers[1]['color'].should == 'green'
-    layers[2]['color'].should == 'red'
-    layers[3]['color'].should == 'white'
+    layers[0].color.should == 'black'
+    layers[1].color.should == 'green'
+    layers[2].color.should == 'red'
+    layers[3].color.should == 'white'
 
-    layers[0]['range'].should == (531 ... 536)
-    layers[1]['range'].should == (456 ... 461)
-    layers[2]['range'].should == (371 ... 374)
-    layers[3]['range'].should == (221 ... 226)
-    layers.map{ |l| l['backend'] }.uniq.should == ['coloring']
+    layers[0].range.should == (575 ... 580)
+    layers[1].range.should == (495 ... 500)
+    layers[2].range.should == (405 ... 408)
+    layers[3].range.should == (245 ... 250)
+    layers.map{ |l| l.backend }.uniq.should == ['coloring']
   end
 end

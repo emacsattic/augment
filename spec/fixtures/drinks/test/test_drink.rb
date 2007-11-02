@@ -2,7 +2,7 @@ require 'test/unit'
 
 class SampleTest < Test::Unit::TestCase
   def test_might_error
-    junk.blah
+    junk.foo
   end
   
   def test_should_pass_longer

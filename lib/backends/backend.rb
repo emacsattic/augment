@@ -10,5 +10,12 @@ class Backend
         end
       end
     end
+
+    def with_no_output
+      old_stdout = $stdout.clone
+      $stdout.reopen(File.new('/dev/null','w'))
+      yield
+      $stdout.reopen(old_stdout)
+    end
   end
 end

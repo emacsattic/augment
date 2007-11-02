@@ -20,9 +20,8 @@ class HtmlFrontend < Frontend
     end
     
     def process_layer(text, layer)
-      text.html_colorize_range(layer['range'], layer['color'])
+      text.html_colorize_range(layer.range, layer.color)
     end
   end
+  Augment::FRONTENDS['html'] = self
 end
-
-Augment::FRONTENDS['html'] = HtmlFrontend
