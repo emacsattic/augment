@@ -20,6 +20,6 @@ class ColoringBackend < Backend
       write_layers
     end
   end
+  
+  Augment::BACKENDS['color'] = self
 end
-
-Augment::BACKENDS['color'] = ColoringBackend
