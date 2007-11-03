@@ -40,7 +40,7 @@ end
 def Layer.from_failure(file, klass, method, exception)
   color = Test::Assertion === exception ? 'red' : 'yellow'
 
-  trace = exception.backtrace.detect { |e| e =~ /test_drink/ }
+  trace = exception.backtrace.detect { |e| e =~ Regexp.new(file) }
   line = trace.match(/:(\d*):/)[1]
 
   range = Layer.line_to_char_range(file, line.to_i)

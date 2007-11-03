@@ -47,6 +47,8 @@
 
 (defstruct layer begin end color message backend)
 
+(setq augment-debug t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun augment-layer-from-plist (plist)
@@ -102,7 +104,13 @@
   (setq layers nil)
   (augment-clear)
   (augment-start-process)
-  (process-send-string "augment" (concat (or file (buffer-file-name)) "\n")))
+  (setq in (concat (or file
+		       (expand-file-name (buffer-file-name)))
+		   "\n"))
+   
+  (process-send-string "augment" (concat (or file
+					     (expand-file-name (buffer-file-name)))
+					 "\n")))
 
 (defun augment-start-process ()
   (unless (get-process "augment") ;; only one should be running at a time
@@ -112,6 +120,9 @@
      'augment-filter)))
 
 (defun augment-filter (process output)
+  (setq out output)
+;;  (if augment-debug (with-current-buffer "*augment-debug*"
+;;		      (insert output)))
   (if (string-match "^Error augmenting \\(.*\\)\\." output)
       (error "Error augmenting %s." (match-string 1 output))
     ;; layers need to be cached in local var for messages
@@ -136,7 +147,8 @@
 
 (defun augment-reset ()
   (interactive)
-  (kill-process "augment")
+  (if (get-process "augment")
+    (kill-process "augment"))
   (augment-clear))
 
 (provide 'augment)

@@ -19,6 +19,7 @@
 
 (elunit-clear-suites)
 (defsuite augment-suite nil)
+(augment-reset)
 
 (deftest layer-from-plist augment-suite
   "The layer struct should populated from a plist."
@@ -60,4 +61,24 @@
     (augment-filter nil (flymake-read-file-to-string "fixtures/augment-output.txt"))
     (assert-overlay 2)))
 
+(deftest no-problems-file augment-suite
+  (save-excursion
+    (find-file "fixtures/working_test.rb")
+    (augment-initiate)
+    (sleep-for 1)
+    (kill-buffer "working_test.rb")))
+
+(deftest fix-all-problems augment-suite
+  (save-excursion
+    (find-file "fixtures/fix_test.rb")
+    (augment-initiate)
+    (sleep-for 1)
+    (assert-overlay 77)
+    (beginning-of-buffer)
+    (replace-regexp "assert false" "assert true")
+    (augment-initiate)
+    (sleep-for 1)
+    (assert-no-overlay 77)
+    (kill-buffer "fix_test.rb")))
+  
 (elunit "augment-suite")
