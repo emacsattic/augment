@@ -10,7 +10,14 @@ lib/augment.rb
 lib/backends/backend.rb
 lib/backends/coloring_backend.rb
 lib/backends/test_unit_backend.rb
+<<<<<<< HEAD:Manifest.txt
 lib/flet.rb
+=======
+lib/backends/clear_backend.rb
+lib/backends/flog_backend.rb
+lib/frontends/frontend.rb
+lib/frontends/augment.el
+>>>>>>> updated manifest:Manifest.txt
 lib/frontends/ansi_color_frontend.rb
 lib/frontends/augment.el
 lib/frontends/frontend.rb
