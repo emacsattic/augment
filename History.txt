@@ -1,5 +1,5 @@
-== 1.0.0 / 2007-10-08
+== 1.0.0 / 2007-10-27
 
-* 1 major enhancement
+* Works with a minimal set of backends and frontends
   * Birthday!
 

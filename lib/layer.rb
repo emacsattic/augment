@@ -42,6 +42,7 @@ class Layer
   end
 
   def self.read(original_file)
+    return [] if !File.exist?(Augment.augment_path(original_file))
     layers = JSON.parse(File.read(Augment.augment_path(original_file)))
     layers.map!{ |l| Layer.new(l['range'], l['color'], l['message'], l['backend']) }
     layers.sort_by{ |l| l.range.begin }.reverse

@@ -23,4 +23,8 @@ describe Frontend, " when outputting ANSI color" do
     output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['red']}m *assert/)
     output.to_s.should match(/\e\[#{String::COLOR_LOOKUP['yellow']}m *junk/)
   end
+
+  it "shouldn't complain if the layer file doesn't exist" do
+    Layer.read(__FILE__) # should not raise error
+  end
 end
