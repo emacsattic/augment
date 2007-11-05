@@ -8,21 +8,26 @@ describe TestUnitBackend, " when augmenting test results" do
     FileUtils.rm_r('test/.augment') rescue nil
     
     TestUnitBackend.run('test/test_drink.rb')
+    @layers = Layer.read('test/test_drink.rb')
   end
   
   it "should color failing/erroring tests" do
-    File.should exist(Augment.augment_path('test/test_drink.rb'))
-    layers = Layer.read('test/test_drink.rb')
-    layers.first.color.should == 'red'
-    layers.last.color.should == 'yellow'
+    @layers.first.color.should == 'red'
+    @layers.last.color.should == 'yellow'
+  end
 
-    layers.first.range.should == (289 ... 332)
+  it "should set the range to the line of the error/failure" do
+    @layers.first.range.should == (289 ... 332)
+    @layers.last.range.should == (85 ... 97)
   end
   
   it "should include failure message" do
-    layers = Layer.read('test/test_drink.rb')
-    layers.first.message.should =~ /bad length/
-    layers.last.message.should =~ /undefined local variable or method/
-    layers.map{ |l| l.backend }.uniq.should == ['testunit']
+    @layers = Layer.read('test/test_drink.rb')
+    @layers.first.message.should =~ /bad length/
+    @layers.last.message.should =~ /undefined local variable or method/
+  end
+
+  it "should set the backend field" do
+    @layers.map{ |l| l.backend }.uniq.should == ['testunit']
   end
 end

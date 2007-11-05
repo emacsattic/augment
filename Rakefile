@@ -26,8 +26,7 @@ task :render_html do
   FileUtils.cd(File.dirname(__FILE__) + '/html/src/')
   TEMPLATE = File.read('html.erb')
   Dir.glob('*html').each do |filename|
-    @title = filename.match(/(.*)\.html/)[1].gsub(/_/, ' ').capitalize
-    @title = "Augment" if @title == 'Index' # edge case!
+    @title = ("Augment - " + filename.match(/(.*)\.html/)[1].gsub(/_/, ' ').capitalize).gsub(/ - Index/, '')
     @body = File.read(filename)
     
     html = ERB.new(TEMPLATE).result( binding )

@@ -1,7 +1,7 @@
 $LOAD_PATH << File.dirname(__FILE__)
 require 'spec_helper'
 
-describe Backend, " when augmenting by color" do
+describe ColoringBackend, " when augmenting by color" do
   before do
     FileUtils.cd(PROJECT_ROOT)
     FileUtils.rm_r('lib/.augment') rescue nil
