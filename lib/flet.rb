@@ -1,3 +1,9 @@
+##
+# Horribly disregard any OOP best practices by temporarily redefining
+# methods for the duration of a block. Stolen from Common Lisp.
+#
+# DON'T USE THIS! (unless your *really* mean it and there's no other way)
+#
 def Object.flet(bindings, &block)
   old_methods = {}
 
@@ -15,6 +21,7 @@ def Object.flet(bindings, &block)
   end
 end
 
+# Demo:
 if $0 == __FILE__
   puts "foo" # should output "foo"
   

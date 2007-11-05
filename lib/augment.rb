@@ -20,6 +20,10 @@ class Augment
   end
 
   class << self
+    ##
+    # Interactive mode allows you to repeatedly give augment a filename and have
+    # it spit back layer JSON immediately. By default only uses the test backend.
+    #
     def interactive(backend_names = 'test')
       loop do
         begin
@@ -31,11 +35,13 @@ class Augment
         end
       end
     end
-    
+
+    # Where should the JSON layer files be given a file?
     def augment_path(original)
       "#{File.dirname(File.expand_path(original))}/.augment/#{File.basename(original)}"
     end
   end
 end
 
+# Load up backends and frontends
 Dir.glob(File.dirname(__FILE__) + '/*ends/*rb').each { |b| require b[0 .. -4] }

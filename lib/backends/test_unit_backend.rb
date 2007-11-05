@@ -5,13 +5,20 @@ Object.flet(:at_exit => lambda {}) do
 end
 
 module Test
-  def Unit.puke(*args) # puke in a bucket
+  # Puke failures/errors in a bucket
+  def Unit.puke(*args) 
     TestUnitBackend.failure_bucket(*args)
   end
 end
 
+##
+# Backend for gathering test results. Instead of ntalbott's test/unit
+# which ships with Ruby as of 1.8.6, this uses miniunit, a vastly
+# simpler mostly-compatible replacement.
+#
 class TestUnitBackend < Backend
   class << self
+    # Kicks off a miniunit run and captures the failures
     def run(file)
       @file = file
       @layers = {}
@@ -24,9 +31,14 @@ class TestUnitBackend < Backend
 
     def failure_bucket(klass, method, exception)
       # FIXME: errors here could actually occur in impl rather than test file
-      (@layers[@file] ||= []) << Layer.from_failure(@file, klass, method, exception)
+      color = Test::Assertion === exception ? 'red' : 'yellow'
+      line = exception.backtrace.grep(Regexp.new(@file))[0].match(/:(\d*):/)[1].to_i
+
+      (@layers[@file] ||= []) << Layer.new(line, color, exception.message, self, @file)
     end
 
+    # This should allow us to augment a test by running its associated
+    # implementation
     def find_test_for(file)
       # TODO: return test for implementation if possible
       file
@@ -34,15 +46,4 @@ class TestUnitBackend < Backend
   end
   
   Augment::BACKENDS['test'] = self
-end
-
-# TODO: let Layer.new handle this by using a Fixnum instead of range
-def Layer.from_failure(file, klass, method, exception)
-  color = Test::Assertion === exception ? 'red' : 'yellow'
-
-  trace = exception.backtrace.detect { |e| e =~ Regexp.new(file) }
-  line = trace.match(/:(\d*):/)[1]
-
-  range = Layer.line_to_char_range(file, line.to_i)
-  Layer.new(range, color, exception.message, TestUnitBackend)
 end

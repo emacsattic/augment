@@ -1,7 +1,19 @@
 require 'fileutils'
 
+##
+# Base class from which to subclass other backends. Subclasses must
+# implement the +run+ method that gets passed a file name and must (0)
+# set the +@layers+ instance var to a hash of layers containing the
+# metadata gathered and call the +write_layers+ method when finished
+# to save that data.
+#
 class Backend
   class << self
+    def run(file)
+      raise "Base Backend class shouldn't be used for real augmentation."
+    end
+
+    # Output the +@layers+ hash as JSON where augment expects it.
     def write_layers
       @layers.each do |file, layers|
         FileUtils.mkpath(File.dirname(file) + '/.augment')
@@ -11,6 +23,7 @@ class Backend
       end
     end
 
+    # Suppress STDOUT while a block runs.
     def with_no_output
       old_stdout = $stdout.clone
       $stdout.reopen(File.new('/dev/null','w'))

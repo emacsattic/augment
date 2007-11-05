@@ -1,5 +1,8 @@
 require 'flog'
 
+##
+# Gather complexity metrics about a piece of code via flog
+#
 class FlogBackend < Backend
   class << self
     def run(file)
@@ -13,8 +16,8 @@ class FlogBackend < Backend
     end
 
     def record(method, score)
-      return if method =~ /\#none$/
-      color = 'red' # TODO
+      return if method =~ /\#none$/ # tossing this stuff
+      color = 'red' # TODO: determine color smartly
       message = "#{method} flogs at #{score}"
       (@layers[@file] ||= []) << Layer.new(method, color, message, self, @file)
     end

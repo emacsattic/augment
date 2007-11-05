@@ -1,3 +1,7 @@
+##
+# This backend is just a dummy that isn't actually useful for anything
+# other than testing purposes.
+#
 class ColoringBackend < Backend
   COLORS = ['white', 'red', 'green', 'blue', 'black']
   

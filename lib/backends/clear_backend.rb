@@ -1,6 +1,8 @@
 require 'find'
 require 'fileutils'
 
+##
+# This backend just gets rid of all .augment files in a directory, recursively.
 class ClearBackend < Backend
   class << self
     def run(file)
