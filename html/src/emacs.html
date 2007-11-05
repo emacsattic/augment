@@ -1,0 +1,26 @@
+<p>The Emacs frontend to augment currently implements a very small set
+  of commands. To activate this functionality, install it by copying
+  the <tt>lib/frontends/augment.el</tt> file into your Emacs load path
+  and adding <tt>(require 'augment)</tt> to your <tt>.emacs</tt>
+  file. (Note that augment relies on <tt>json.el</tt> being
+  installed. If you don't have this, you can get it from
+  <a href='http://edward.oconnor.cx/2006/03/json.el'>Edward
+  O'Connor</a>.) Once you've done this you'll be able to
+  invoke <tt>M-x augment-mode</tt>.</p>
+
+<p>In augment-mode, saving a file will result in selected backends
+  being run on it and the results of those backends being displayed in
+  the buffer. Currently only the test/unit backend will run. You also
+  have access to the following key bindings:</p>
+
+<ul>
+  <li><tt>C-c C-s</tt> - augment-initiate (kick off the augment
+    process for selected backends</li>
+  <li><tt>C-c C-i</tt> - augment-show-message (show the message
+    associated with the layer at point</li>
+  <li><tt>C-c C-k</tt> - augment-clear (remove layers)</li>
+</ul>
+
+<p>Tests for <tt>augment.el</tt> may be found
+  in <tt>spec/emacs-frontend-test.el</tt>. These
+  require <a href='http://www.emacswiki.org/cgi-bin/wiki/ElUnit'>elunit</a> to run.</p>

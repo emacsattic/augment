@@ -1,3 +1,14 @@
-= Backends
-== test/unit
-* Discover char range from exception
+Layers:
+ - determine char range from ambiguous method names and class methods
+ - get the char range for a whole method
+ - get the char range for the "def" line of a method
+FlogBackend:
+ - color layers based on the severity of complexity
+General:
+ - allow "--interactive" use to specify what backends to use
+ - allow for a broader range of colors (html colors?) (how to handle ANSI?)
+ - overlapping layers?
+Emacs:
+ - stability issues
+ - augment-show-message
+ - specify what backends to use

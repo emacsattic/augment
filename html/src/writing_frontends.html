@@ -1,0 +1,23 @@
+<p>Augment frontends are intentionally kept very simple in order to
+  avoid duplicated effort. In order to implement them, you have to do
+  at least three things:</p>
+
+<ol>
+  <li>Parse the layer files from JSON for the current file.</li>
+  <li>Render the layers in the files they apply to. This should be
+    implemented as just changing the background color of a range of
+    characters.</li>
+  <li>Allow the user to see the message associated with the layer in
+    which the cursor currently resides.</li>
+  <li><i>Bonus</i>: send the file name to <tt>augment
+      --interactive</tt> when a file is saved and parse the response.</li>
+  <li><i>Bonus</i>: allow the user to specify which backends they want
+    to use, preferrably on a per-file basis.</li>
+</ol>
+
+<p>That last step will become more important as more backends are implemented.</p>
+
+<p>TODO: explain more stuff!</p>
+
+<p>Be sure to check on the <a href=''>mailing list</a> to coordinate
+  work for your editor. Someone may already be working on it.</p>

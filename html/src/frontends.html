@@ -1,0 +1,29 @@
+<p>Augment frontends are ways in which data collected by
+  the <a href='backends'>backends</a> is fed back to the user. In the
+  interests of keeping the feedback loop as tight as possible, it's
+  desirable that these frontends operate within editing environments
+  so that they are most visible. The following editing environments
+  are currently supported:</p>
+
+<ul>
+  <li><a href='emacs.html'>GNU Emacs</a></li>
+  <li><a href='textmate.html'>Textmate</a> (limited support)</li>
+</ul>
+
+<p>You can use augment independently, but it's likely to be much less
+  convenient. If you're interested in doing this, augment has two
+  non-editor frontends: the ANSI shell color codes frontend and the
+  HTML frontend. They are mostly used for testing purposes.</p>
+
+<p>To use the ANSI color frontend, type <tt>augment ansi FILENAME</tt>
+  in a compliant terminal to see what metadata augment has stored
+  about that file.</p>
+
+<p>To use the HTML frontend, type <tt>augment html FILENAME >
+    file.html</tt> and the file will contain what you're looking
+    for.</p>
+
+<p>Adding support for new editors is not difficult if you know the
+  internals of your editor well (as you should.) See
+  the <a href='writing_frontends.html'>writing frontends guide</a> for
+  details.</p>
