@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'hoe'
+require 'erb'
 require 'spec/rake/spectask'
 require './lib/augment.rb'
 
@@ -18,7 +19,20 @@ Hoe.new('augment', Augment::VERSION) do |p|
 end
 
 task :publish_html do
-  system("scp -r html/* technomancy@rubyforge.org:/var/www/gforge-projects/augment/")
+  system("scp html/* technomancy@rubyforge.org:/var/www/gforge-projects/augment/")
+end
+
+task :render_html do
+  FileUtils.cd(File.dirname(__FILE__) + '/html/src/')
+  TEMPLATE = File.read('html.erb')
+  Dir.glob('*html').each do |filename|
+    @title = filename.match(/(.*)\.html/)[1].gsub(/_/, ' ').capitalize
+    @title = "Augment" if @title == 'Index' # edge case!
+    @body = File.read(filename)
+    
+    html = ERB.new(TEMPLATE).result( binding )
+    File.open("../#{filename}", 'w') { |f| f.puts html }
+  end
 end
 
 Spec::Rake::SpecTask.new

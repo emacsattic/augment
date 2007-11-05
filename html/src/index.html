@@ -1,0 +1,43 @@
+      <img src="i/test-sample.png" alt="sample" align="right" />
+
+      <p>Augment is a system for gathering metadata from code and
+	displaying it. This metadata will include test
+	failures, test coverage levels, complexity metrics, and
+	others. The display frontends are pluggable so as to interface
+	with many editors and environments.</p>
+
+      <p>You can <tt>gem install augment</tt> to play around with it.</p>
+
+      <h3>Usage</h3>
+
+      <p>Ideally you would rarely use augment directly, but rather you
+      would interact with it from within whatever environment
+      you use as an editor. How you use augment is highly dependent on
+      what editor you're using to interact with it. Augment currently
+      supports these editors:</p>
+
+      <ul>
+	<li><a href='emacs.html'>GNU Emacs</a></li>
+	<li><a href='textmate.html'>Textmate</a> (limited support)</li>
+      </ul>
+
+      <p>As you can see, that's a short list. If you'd like to
+      implement augment support for your editor, it's pretty easy. See
+      the <a href='writing_frontends.html'>writing a frontend guide</a> for
+      details.</p>
+
+      <p>Augment works by running a set of <a href='backends.html'>backends</a>
+      on a file to gather metadata about it and passing off that
+      metadata to frontends that get feedback to the user.</p>
+
+      <h3>Development</h3>
+
+      <p>Grab the source: <tt>git://repo.or.cz/augment.git</tt></p>
+
+      <p>Hop on the <a href=''>mailing list</a> to coordinate.</p>
+      
+      <h3>Inspiration</h3>
+
+      <p>Augment came out of
+      a <a href='http://technomancy.us/static/feedback_slides.tar.gz'>talk
+      from Rubyconf 2007</a>.</p>

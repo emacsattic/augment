@@ -3,13 +3,19 @@ $LOAD_PATH << File.dirname(__FILE__) + '/../lib'
 
 require 'augment'
 
+# TODO: real option parsing?
 if ARGV.first == '--interactive'
   Augment.interactive
   exit 0
 elsif ARGV.size != 2
-  puts "Usage: augment BACKEND/FRONTEND FILE"
-  puts "   or: augment --interactive"
-  puts "Output or store metadata regarding code."
+  puts "Usage: augment BACKEND/FRONTEND FILE
+   or: augment --interactive
+Output or store metadata regarding code.
+
+Available backends:
+#{Augment::BACKENDS.map { |k, v| "  #{k}:#{v}"}.join("\n")}
+Available frontends:
+#{Augment::FRONTENDS.map { |k, v| "  #{k}:#{v}"}.join("\n")}"
   exit 1
 end
 

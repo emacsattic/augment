@@ -1,0 +1,36 @@
+body {
+  font-family: Verdana, "Lucida Sans", sans-serif;
+}
+
+h1, h2, h3, h4 {
+  color: #8D1618;
+}
+
+#header { 
+  padding-bottom: 1em;
+}
+
+#nav li { 
+  float: left;
+  list-style-type: none;
+  padding-left: 2em;
+  padding-bottom: 1em;
+}
+
+#header hr { 
+  clear: both;
+}
+
+a {
+  color: #AB0003;
+}
+
+a:hover {
+  background-color: #FFF3F3;
+}
+
+p#copyright {
+  font-size: 80%;
+}
+
+hr { height: 1px; }

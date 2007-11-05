@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	  "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+    <title><%= @title %></title>
+    <meta http-equiv="Content-Type" content="text/html;
+					     charset=us-ascii">
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="header">
+	<h2><%= @title %></h2>
+	<ul id='nav'>
+	  <li><a href='/'>Home</a></li>
+	  <li><a href='frontends.html'>Frontends</a></li>
+	  <li><a href='backends.html'>Backends</a></li>
+	  <li><a href='http://rubyforge.org/projects/augment'>Project Page</a></li>
+	</ul>
+	<hr />
+      </div>
+      <%= @body %>
+      <hr />
+      <p id="copyright">by <a href='http://technomancy.us'>Phil Hagelberg</a></p>
+    </div>
+  </body>
+</html>
