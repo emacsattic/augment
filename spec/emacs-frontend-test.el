@@ -12,13 +12,15 @@
 
 (require 'elunit) ;; See http://www.emacswiki.org/cgi-bin/wiki/ElUnit
 (require 'augment)
-(require 'flymake)
+(require 'flymake) ;; for flymake-read-file-to-string
 
 ;; in case it hasn't been properly installed
 (add-to-list 'exec-path (expand-file-name "../bin"))
 
 (elunit-clear-suites)
-(defsuite augment-suite nil)
+(lexical-let ((spec-dir (file-name-nondirectory (buffer-file-name (current-buffer)))))
+  (defsuite augment-suite nil :setup-hook (lambda () (cd spec-dir))))
+                                            
 (augment-reset)
 
 (deftest layer-from-plist augment-suite
@@ -73,12 +75,13 @@
     (find-file "fixtures/fix_test.rb")
     (augment-initiate)
     (sleep-for 1)
-    (assert-overlay 77)
+    (assert-overlay 88)
     (beginning-of-buffer)
     (replace-regexp "assert false" "assert true")
     (augment-initiate)
     (sleep-for 1)
     (assert-no-overlay 77)
+    (revert-buffer t t)
     (kill-buffer "fix_test.rb")))
   
-(elunit "augment-suite")
+(elunit-quiet "augment-suite")

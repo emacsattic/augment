@@ -8,6 +8,7 @@ General:
  - allow "--interactive" use to specify what backends to use
  - allow for a broader range of colors (html colors?) (how to handle ANSI?)
  - overlapping layers?
+ - publish html+docs using rsync
 Emacs:
  - stability issues
  - augment-show-message

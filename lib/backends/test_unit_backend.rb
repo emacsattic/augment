@@ -1,13 +1,15 @@
 Object.flet(:at_exit => lambda {}) do
   # keep miniunit's at_exit block from running
-  gem 'miniunit', ">= 1.0.1"
+  gem 'miniunit', ">= 1.1.0"
   require 'test/unit'
 end
 
-module Test
-  # Puke failures/errors in a bucket
-  def Unit.puke(*args) 
-    TestUnitBackend.failure_bucket(*args)
+module MiniTest
+  class Unit
+    # Puke failures/errors in a bucket
+    def puke(*args) 
+      TestUnitBackend.failure_bucket(*args)
+    end
   end
 end
 

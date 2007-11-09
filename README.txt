@@ -20,12 +20,11 @@ Example:
 
 $ augment test lib/foo.rb # will store metadata for test/test_foo.rb
 
-The various frontends have their own executables that provide access
-to the layer metadata once it's stored. The simplest frontend is
-+augment_color+ which outputs the layers via ANSI color codes to the
-shell:
+You can also use the +augment+ executable to display stored
+metadata. The simplest frontend is +color+ which outputs the
+layers via ANSI color codes to the shell:
 
-$ augment_color test/test_foo.rb
+$ augment color test/test_foo.rb
 
 Most other frontends are editor-specific.
 
@@ -73,13 +72,14 @@ Backends:
 Frontends:
 
 * ANSI color codes (for shells)
-* Emacs (planned)
-* Vim (planned)
+* HTML
+* Emacs
 * Textmate (planned)
+* Vim (planned, need help)
 
 == Issues
   
-* Not really, um, written yet.
+* A bit short on frontends and backends.
 
 == License
 
