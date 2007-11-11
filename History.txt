@@ -3,3 +3,6 @@
 * Works with a minimal set of backends and frontends
   * Birthday!
 
+== 1.0.1 / 2007-11-10
+
+* Works with newly-released miniunit 1.1.0.
