@@ -42,6 +42,3 @@ class Augment
     end
   end
 end
-
-# Load up backends and frontends
-Dir.glob(File.dirname(__FILE__) + '/*ends/*rb').each { |b| require b[0 .. -4] }

@@ -19,4 +19,17 @@ Available frontends:
   exit 1
 end
 
-Augment.new Augment::BACKENDS[ARGV[0]] || Augment::FRONTENDS[ARGV[0]], ARGV[1]
+action = ARGV[0]
+
+begin
+  require "backends/#{action}_backend"
+rescue LoadError => e
+  warn e
+  begin
+    require "frontends/#{action}_frontend"
+  rescue LoadError => e
+    warn e
+  end
+end
+
+Augment.new Augment::BACKENDS[action] || Augment::FRONTENDS[action], ARGV[1]
