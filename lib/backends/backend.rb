@@ -9,7 +9,7 @@ require 'fileutils'
 #
 class Backend
   def self.layers
-    @@layers ||= Hash.new { |h,k| h[k] = [] }
+    @layers ||= Hash.new { |h,k| h[k] = [] }
   end
   
   def self.run(file)
